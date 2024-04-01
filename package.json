@@ -17,10 +17,9 @@
         "vue": "^3.4.21"
     },
     "dependencies": {
-        "datatables.net-bs4": "^2.0.2",
+        "datatables.net-bs4": "^2.0.3",
         "datatables.net-buttons-bs4": "^3.0.1",
         "datatables.net-responsive-bs4": "^3.0.0",
-        "flatpickr": "^4.6.13",
         "jquery": "^3.7.1",
         "moment": "^2.30.1",
         "popper.js": "^1.16.1",
