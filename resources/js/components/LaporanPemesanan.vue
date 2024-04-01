@@ -47,6 +47,14 @@
                       </tr>
                     </tbody>
                   </table>
+
+                  <div class="row">
+                    <div class="col-sm-12 col-md-5">
+                      <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                        Showing 1 to 10 of {{ laporanPemesanan.length }} entries
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -55,61 +63,59 @@
   </template>
   
   <script>
+  import moment from 'moment';
   import flatPickr from 'vue-flatpickr-component';
-export default {
-  components:{
-    flatPickr,
-  },
-  data() {
-    return {
-      datePickerConfig: {
-        dateFormat: 'd/m/Y',
-      },
-      datefilter: '',
-      endDateFilter: '', // Tambahkan endDateFilter di data
-      laporanPemesanan: [
-        { purchaseOrder: '01', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
-        { purchaseOrder: '02', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
-        { purchaseOrder: '03', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' }
-      ]
-    };
-  },
-  methods: {
-    search() {
-      // Parsing tanggal dari string input ke objek Date
-      const startDate = new Date(this.datefilter);
-      const endDate = new Date(this.endDateFilter); // Menggunakan endDateFilter yang telah ditambahkan
-
-      // Filter laporanPemesanan berdasarkan rentang tanggal
-      const filteredLaporanPemesanan = this.laporanPemesanan.filter(item => {
-        // Parsing tanggal pemesanan dari string ke objek Date
-        const tanggalPemesanan = new Date(item.tanggalPemesanan);
-        // Membandingkan apakah tanggal pemesanan berada di antara rentang tanggal yang dipilih
-        return tanggalPemesanan >= startDate && tanggalPemesanan <= endDate;
-      });
-
-      // Mengupdate data laporanPemesanan dengan data yang telah difilter
-      this.laporanPemesanan = filteredLaporanPemesanan;
-    }
-  },
-  mounted() {
-    $(function () {
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
-  }
-}
-</script>
-
   
-  <style>
-  /* Add your custom styles here */
-  </style>
+  export default {
+    components:{
+      flatPickr,
+    },
+    data() {
+      return {
+        datePickerConfig: {
+          dateFormat: 'd/m/Y',
+        },
+        datefilter: '',
+        endDateFilter: '',
+        laporanPemesananAwal: [
+          { purchaseOrder: '01', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
+          { purchaseOrder: '02', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
+          { purchaseOrder: '03', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
+          { purchaseOrder: '04', namaProduk: 'Keripik Pisang', namaToko: 'Keripik Noel', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '29/12/2023' },
+          { purchaseOrder: '05', namaProduk: 'Keripik Pisang', namaToko: 'Keripik Noel', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '29/12/2023' },
+          { purchaseOrder: '06', namaProduk: 'Keripik Pisang', namaToko: 'Keripik Noel', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '29/12/2023' }
+        ],
+        laporanPemesanan: [],
+      };
+    },
+    methods: {
+      search() {
+        const startDate = moment(this.datefilter, 'DD-MM-YYYY').toDate();
+        const endDate = moment(this.endDateFilter, 'DD-MM-YYYY').toDate();
+  
+        const filteredLaporanPemesanan = this.laporanPemesananAwal.filter(item => {
+          const tanggalPemesanan = moment(item.tanggalPemesanan, 'DD/MM/YYYY').toDate();
+          return tanggalPemesanan >= startDate && tanggalPemesanan <= endDate;
+        });
+  
+        this.laporanPemesanan = filteredLaporanPemesanan;
+      }
+    },
+    mounted() {
+      this.laporanPemesanan = this.laporanPemesananAwal;
+  
+      $(function () {
+        $('#example2').DataTable({
+          "paging": true,
+          "lengthChange": false,
+          "searching": false,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false,
+          "responsive": true,
+        });
+      });
+    }
+  }
+  </script>
   
