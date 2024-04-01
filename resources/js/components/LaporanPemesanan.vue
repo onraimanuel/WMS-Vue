@@ -7,24 +7,20 @@
         </div>
         <div class="card-body">
           <div class="container">
-            <div class="form-group">
-              <label>Tanggal:</label>
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="far fa-calendar-alt"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control float-right" v-model="datefilter">
-                    <div class="col-md-4">
-                      <button type="button" class="btn btn-info" @click="search">Cari</button>
-                    </div>
-                  </div>
-                </div>
+            <div class="form-group row">
+                <div class="col-md-3 btn-block mt-2">
+                <label>Start Date:</label>
+                <flat-pickr v-model="datefilter" :config="datePickerConfig"></flat-pickr>
               </div>
+               <div class="col-md-3 btn-block mt-2">
+              <label>End Date:</label>
+              <flat-pickr v-model="endDateFilter" :config="datePickerConfig"></flat-pickr>
             </div>
+            <div class="col-md-2 align-self-end"> 
+                <button type="button" class="btn btn-info btn-sm btn-block mt-1" @click="search">Cari</button>
+            </div>
+  </div>
+      </div>
             <table id="example2" class="table table-bordered table-hover">
               <thead>
                 <tr>
@@ -51,46 +47,74 @@
                 </tr>
               </tbody>
             </table>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                  Showing 1 to 10 of {{ laporanPemesanan.length }} entries
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
   </section>
 </template>
 
 <script>
+import moment from 'moment';
+import flatPickr from 'vue-flatpickr-component';
+
 export default {
-  data() {
-    return {
-      datefilter: '',
-      laporanPemesanan: [
-        { purchaseOrder: '01', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
-        { purchaseOrder: '02', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
-        { purchaseOrder: '03', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' }
-      ]
-    };
+components:{
+flatPickr,
+},
+data() {
+return {
+  datePickerConfig: {
+    dateFormat: 'd/m/Y',
   },
-  methods: {
-    search() {
-      // Implement your search logic here
-    }
-  },
-  mounted() {
-    $(function () {
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
-  }
+  datefilter: '',
+  endDateFilter: '',
+  laporanPemesananAwal: [
+    { purchaseOrder: '01', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
+    { purchaseOrder: '02', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
+    { purchaseOrder: '03', namaProduk: 'Sasagun Andaliman', namaToko: 'Bramstam', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '26/11/2023' },
+    { purchaseOrder: '04', namaProduk: 'Keripik Pisang', namaToko: 'Keripik Noel', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '29/12/2023' },
+    { purchaseOrder: '05', namaProduk: 'Keripik Pisang', namaToko: 'Keripik Noel', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '29/12/2023' },
+    { purchaseOrder: '06', namaProduk: 'Keripik Pisang', namaToko: 'Keripik Noel', jumlah: 1, hargaPerUnit: '10.000', totalHarga: '10.000', tanggalPemesanan: '29/12/2023' }
+  ],
+  laporanPemesanan: [],
+};
+},
+methods: {
+search() {
+  const startDate = moment(this.datefilter, 'DD-MM-YYYY').toDate();
+  const endDate = moment(this.endDateFilter, 'DD-MM-YYYY').toDate();
+
+  const filteredLaporanPemesanan = this.laporanPemesananAwal.filter(item => {
+    const tanggalPemesanan = moment(item.tanggalPemesanan, 'DD/MM/YYYY').toDate();
+    return tanggalPemesanan >= startDate && tanggalPemesanan <= endDate;
+  });
+
+  this.laporanPemesanan = filteredLaporanPemesanan;
+}
+},
+mounted() {
+this.laporanPemesanan = this.laporanPemesananAwal;
+
+$(function () {
+  $('#example2').DataTable({
+    "paging": true,
+    "lengthChange": false,
+    "searching": false,
+    "ordering": true,
+    "info": true,
+    "autoWidth": false,
+    "responsive": true,
+  });
+});
+}
 }
 </script>
-
-<style>
-/* Add your custom styles here */
-</style>
