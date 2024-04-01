@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   @include("Header.Header")
-  <title>Laporan Stok</title>
+  <title>Report</title>
   @vite(['resources/js/app.js'])
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -13,7 +13,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Laporan Stok</h1>
+            <h1 class="m-0">Report </h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
