@@ -9,11 +9,11 @@
           <div class="container">
             <div class="form-group row">
                 <div class="col-md-3 btn-block mt-2">
-                <label>Start Date:</label>
+                <label>Start Date: </label>
                 <flat-pickr v-model="datefilter" :config="datePickerConfig"></flat-pickr>
               </div>
                <div class="col-md-3 btn-block mt-2">
-              <label>End Date:</label>
+              <label>End Date: </label>
               <flat-pickr v-model="endDateFilter" :config="datePickerConfig"></flat-pickr>
             </div>
             <div class="col-md-2 align-self-end"> 
