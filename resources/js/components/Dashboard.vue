@@ -14,7 +14,7 @@
                         <div class="icon">
                             <i class="ion ion-bag"></i>
                         </div>
-                        <a href="#" class="small-box-footer"
+                        <a href="http://127.0.0.1:8000/ProdukToko" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -31,7 +31,7 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="#" class="small-box-footer"
+                        <a href="http://127.0.0.1:8000/PembelianProduk" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -48,7 +48,7 @@
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
-                        <a href="#" class="small-box-footer"
+                        <a href="http://127.0.0.1:8000/PembelianProduk" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -65,7 +65,7 @@
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        <a href="#" class="small-box-footer"
+                        <a href="http://127.0.0.1:8000/LaporanPemesanan" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -75,8 +75,16 @@
             <!-- Main row -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Data Produk</h3>
-                </div>
+                            <h3 class="card-title">Data Produk</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" class="form-control float-right" placeholder="Cari" v-model="searchTerm" @input="searchProducts">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">
                     <table
@@ -171,6 +179,7 @@
                                 <button
                                     type="button"
                                     class="btn btn-block bg-gradient-primary btn-sm"
+                                    @click="redirectToTambahProduk"
                                 >
                                     Tambah Produk
                                 </button>
@@ -194,16 +203,23 @@ export default {
             currentPage: 1,
             perPage: 10,
             maxPageLinks: 5,
+            searchTerm: '' // Tambahkan properti searchTerm
         };
     },
     computed: {
         totalPages() {
-            return Math.ceil(this.products.length / this.perPage);
+            return Math.ceil(this.filteredProducts.length / this.perPage); // Ganti this.products menjadi this.filteredProducts
         },
         displayedProducts() {
             const start = (this.currentPage - 1) * this.perPage;
             const end = start + this.perPage;
-            return this.products.slice(start, end);
+            return this.filteredProducts.slice(start, end); // Ganti this.products menjadi this.filteredProducts
+        },
+        filteredProducts() {
+            // Filter produk berdasarkan searchTerm
+            return this.products.filter(product => {
+                return product.product_name.toLowerCase().includes(this.searchTerm.toLowerCase());
+            });
         },
         pagesToShow() {
             const pageCount = this.totalPages;
@@ -216,12 +232,10 @@ export default {
             );
             let endPage = Math.min(pageCount, startPage + maxPageLinks - 1);
 
-            // Adjust startPage and endPage if there are not enough pages to display
             if (endPage - startPage + 1 < maxPageLinks) {
                 startPage = Math.max(1, endPage - maxPageLinks + 1);
             }
 
-            // Generate an array of page numbers to display
             return Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => startPage + i
@@ -235,14 +249,12 @@ export default {
                     "http://kreatif.tobakab.go.id/api/produk"
                 );
                 let data = await response.json();
-                // Urutkan data berdasarkan product_id secara descending
                 data.products.sort((a, b) => b.product_id - a.product_id);
                 this.products = data.products;
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         },
-
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
@@ -256,13 +268,18 @@ export default {
         gotoPage(page) {
             this.currentPage = page;
         },
+        searchProducts() {
+            // Metode untuk menangani perubahan pada input pencarian
+            this.currentPage = 1; // Reset halaman saat melakukan pencarian
+        },
+        // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
+        redirectToTambahProduk() {
+            // Mengarahkan pengguna ke halaman Tambah Produk
+            window.location.href = 'http://127.0.0.1:8000/tambahproduk';
+        },
     },
     mounted() {
         this.fetchProducts();
     },
 };
 </script>
-
-<style scoped>
-/* Add your scoped CSS styles here */
-</style>

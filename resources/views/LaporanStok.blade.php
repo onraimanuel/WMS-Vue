@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   @include("Header.Header")
-  <title>Laporan Stok</title>
+  <title>Report</title>
   @vite(['resources/js/app.js'])
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

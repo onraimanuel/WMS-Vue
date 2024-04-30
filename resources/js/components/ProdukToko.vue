@@ -49,7 +49,11 @@
                                     <td>
                                         <button
                                             class="btn btn-primary"
+
                                             @click="goToEditProduct(index)"
+
+                                            @click="editProduct(index)"
+
                                         >
                                             <i class="fas fa-pen nav-icon"></i>
                                             Edit
@@ -121,12 +125,21 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="float-right">
+
                                     <router-link
                                         to="/tambahproduk"
                                         class="btn btn-block bg-gradient-primary btn-sm"
                                     >
                                         Tambah Produk
                                     </router-link>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-block bg-gradient-primary btn-sm"
+                                    >
+                                        Tambah Produk
+                                    </button>
+
                                 </div>
                             </div>
                         </div>
@@ -167,9 +180,17 @@ export default {
             );
             let endPage = Math.min(pageCount, startPage + maxPageLinks - 1);
 
+
+
+            // Adjust startPage and endPage if there are not enough pages to display
+
             if (endPage - startPage + 1 < maxPageLinks) {
                 startPage = Math.max(1, endPage - maxPageLinks + 1);
             }
+
+
+
+            // Generate an array of page numbers to display
 
             return Array.from(
                 { length: endPage - startPage + 1 },
@@ -204,6 +225,7 @@ export default {
         gotoPage(page) {
             this.currentPage = page;
         },
+
         deleteProduct(index) {
             // Your delete product logic here
         },
@@ -211,6 +233,7 @@ export default {
             const productId = this.displayedProducts[index].product_id;
             this.$router.push({ path: `/editproduk/${productId}` });
         },
+
     },
     mounted() {
         this.fetchProducts();
