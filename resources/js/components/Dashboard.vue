@@ -14,7 +14,9 @@
                         <div class="icon">
                             <i class="ion ion-bag"></i>
                         </div>
-                        <a href="http://127.0.0.1:8000/ProdukToko" class="small-box-footer"
+                        <a
+                            href="http://127.0.0.1:8000/ProdukToko"
+                            class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -31,7 +33,9 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a href="http://127.0.0.1:8000/PembelianProduk" class="small-box-footer"
+                        <a
+                            href="http://127.0.0.1:8000/PembelianProduk"
+                            class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -48,7 +52,9 @@
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
-                        <a href="http://127.0.0.1:8000/PembelianProduk" class="small-box-footer"
+                        <a
+                            href="http://127.0.0.1:8000/PembelianProduk"
+                            class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -65,7 +71,9 @@
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        <a href="http://127.0.0.1:8000/LaporanPemesanan" class="small-box-footer"
+                        <a
+                            href="http://127.0.0.1:8000/LaporanPemesanan"
+                            class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
@@ -75,16 +83,27 @@
             <!-- Main row -->
             <div class="card">
                 <div class="card-header">
-                            <h3 class="card-title">Data Produk</h3>
-                            <div class="card-tools">
-                                <div class="input-group input-group-sm" style="width: 150px;">
-                                    <input type="text" class="form-control float-right" placeholder="Cari" v-model="searchTerm" @input="searchProducts">
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                    </div>
-                                </div>
+                    <h3 class="card-title">Data Produk</h3>
+                    <div class="card-tools">
+                        <div
+                            class="input-group input-group-sm"
+                            style="width: 150px"
+                        >
+                            <input
+                                type="text"
+                                class="form-control float-right"
+                                placeholder="Cari"
+                                v-model="searchTerm"
+                                @input="searchProducts"
+                            />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
                         </div>
+                    </div>
+                </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive">
                     <table
@@ -203,7 +222,7 @@ export default {
             currentPage: 1,
             perPage: 10,
             maxPageLinks: 5,
-            searchTerm: '' // Tambahkan properti searchTerm
+            searchTerm: "", // Tambahkan properti searchTerm
         };
     },
     computed: {
@@ -217,8 +236,10 @@ export default {
         },
         filteredProducts() {
             // Filter produk berdasarkan searchTerm
-            return this.products.filter(product => {
-                return product.product_name.toLowerCase().includes(this.searchTerm.toLowerCase());
+            return this.products.filter((product) => {
+                return product.product_name
+                    .toLowerCase()
+                    .includes(this.searchTerm.toLowerCase());
             });
         },
         pagesToShow() {
@@ -243,18 +264,18 @@ export default {
         },
     },
     methods: {
-        async fetchProducts() {
-            try {
-                const response = await fetch(
-                    "http://kreatif.tobakab.go.id/api/produk"
-                );
-                let data = await response.json();
-                data.products.sort((a, b) => b.product_id - a.product_id);
-                this.products = data.products;
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
-        },
+        // async fetchProducts() {
+        //     try {
+        //         const response = await fetch(
+        //             "http://kreatif.tobakab.go.id/api/produk"
+        //         );
+        //         let data = await response.json();
+        //         data.products.sort((a, b) => b.product_id - a.product_id);
+        //         this.products = data.products;
+        //     } catch (error) {
+        //         console.error("Error fetching products:", error);
+        //     }
+        // },
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
@@ -275,7 +296,7 @@ export default {
         // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
         redirectToTambahProduk() {
             // Mengarahkan pengguna ke halaman Tambah Produk
-            window.location.href = 'http://127.0.0.1:8000/tambahproduk';
+            window.location.href = "http://127.0.0.1:8000/tambahproduk";
         },
     },
     mounted() {
