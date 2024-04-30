@@ -27,6 +27,19 @@ class Product extends Model
         'product_name',
         'on_warehouse',
         'is_deleted',
-        // tambahkan kolom lain yang ingin Anda isi secara massal di sini
+        'description',
     ];
+
+    protected $primaryKey = 'product_id';
+
+    public function stocks()
+    {
+        return $this->hasMany(Stocks::class, 'product_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+    }
+
 }

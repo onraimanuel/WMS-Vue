@@ -20,14 +20,11 @@
                                     <th>Spesifikasi Produk</th>
                                     <th>Tanggal Masuk</th>
                                     <th>Tanggal Expired</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr
-                                    v-for="(
-                                        product, index
-                                    ) in displayedProducts"
+                                    v-for="(product, index) in products"
                                     :key="index"
                                 >
                                     <td>
@@ -39,31 +36,10 @@
                                     </td>
                                     <td>{{ product.product_name }}</td>
                                     <td>{{ product.stok }}</td>
-                                    <td>{{ product.nama_kategori }}</td>
-                                    <td>
-                                        {{ product.product_description }}
-                                    </td>
-                                    <!-- Tambahkan kolom untuk tanggal masuk dan tanggal expired -->
+                                    <td>{{ product.kategori }}</td>
+                                    <td>{{ product.spesifikasi }}</td>
                                     <td>{{ product.tanggal_masuk }}</td>
                                     <td>{{ product.tanggal_expired }}</td>
-                                    <td>
-                                        <button
-                                            class="btn btn-primary"
-                                            @click="editProduct(index)"
-                                        >
-                                            <i class="fas fa-pen nav-icon"></i>
-                                            Edit
-                                        </button>
-                                        <button
-                                            class="btn btn-danger"
-                                            @click="deleteProduct(index)"
-                                        >
-                                            <i
-                                                class="fas fa-trash nav-icon"
-                                            ></i>
-                                            Hapus
-                                        </button>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -124,6 +100,7 @@
                                     <button
                                         type="button"
                                         class="btn btn-block bg-gradient-primary btn-sm"
+                                        @click="redirectToTambahProduk"
                                     >
                                         Tambah Produk
                                     </button>
@@ -138,6 +115,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     data() {
         return {
@@ -145,6 +124,7 @@ export default {
             currentPage: 1,
             perPage: 10,
             maxPageLinks: 5,
+            searchTerm: "",
         };
     },
     computed: {
@@ -167,12 +147,10 @@ export default {
             );
             let endPage = Math.min(pageCount, startPage + maxPageLinks - 1);
 
-            // Adjust startPage and endPage if there are not enough pages to display
             if (endPage - startPage + 1 < maxPageLinks) {
                 startPage = Math.max(1, endPage - maxPageLinks + 1);
             }
 
-            // Generate an array of page numbers to display
             return Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => startPage + i
@@ -182,18 +160,13 @@ export default {
     methods: {
         async fetchProducts() {
             try {
-                const response = await fetch(
-                    "http://kreatif.tobakab.go.id/api/produk"
-                );
-                let data = await response.json();
-                // Urutkan data berdasarkan product_id secara descending
-                data.products.sort((a, b) => b.product_id - a.product_id);
-                this.products = data.products;
+                const response = await axios.get("/stok");
+                console.log(response.data);
+                this.products = response.data;
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         },
-
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
@@ -206,6 +179,14 @@ export default {
         },
         gotoPage(page) {
             this.currentPage = page;
+        },
+        searchProducts() {
+            // Metode untuk menangani perubahan pada input pencarian
+            this.currentPage = 1; // Reset halaman saat melakukan pencarian
+        },
+        redirectToTambahProduk() {
+            // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
+            window.location.href = "http://127.0.0.1:8000/tambahproduk";
         },
     },
     mounted() {

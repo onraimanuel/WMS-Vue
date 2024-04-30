@@ -1,11 +1,8 @@
 <template>
-    <!-- Content Wrapper -->
-    <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-3 col-6">
-                    <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h3>150</h3>
@@ -14,16 +11,12 @@
                         <div class="icon">
                             <i class="ion ion-bag"></i>
                         </div>
-                        <a
-                            href="http://127.0.0.1:8000/ProdukToko"
-                            class="small-box-footer"
+                        <a href="/ProdukToko" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>
-                <!-- ./col -->
                 <div class="col-lg-3 col-6">
-                    <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
                             <h3>53</h3>
@@ -52,35 +45,26 @@
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
-                        <a
-                            href="http://127.0.0.1:8000/PembelianProduk"
-                            class="small-box-footer"
+                        <a href="/PembelianProduk" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>
-                <!-- ./col -->
                 <div class="col-lg-3 col-6">
-                    <!-- small box -->
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3>65</h3>
-
                             <p>Barang Keluar</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        <a
-                            href="http://127.0.0.1:8000/LaporanPemesanan"
-                            class="small-box-footer"
+                        <a href="/LaporanPemesanan" class="small-box-footer"
                             >More info <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>
-                <!-- ./col -->
             </div>
-            <!-- Main row -->
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Data Produk</h3>
@@ -104,7 +88,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.card-header -->
                 <div class="card-body table-responsive">
                     <table
                         id="example1"
@@ -123,7 +106,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(product, index) in displayedProducts"
+                                v-for="(product, index) in products"
                                 :key="index"
                             >
                                 <td>
@@ -133,11 +116,8 @@
                                 </td>
                                 <td>{{ product.product_name }}</td>
                                 <td>{{ product.stok }}</td>
-                                <td>{{ product.nama_kategori }}</td>
-                                <td>
-                                    {{ product.product_description }}
-                                </td>
-                                <!-- Tambahkan kolom untuk tanggal masuk dan tanggal expired -->
+                                <td>{{ product.kategori }}</td>
+                                <td>{{ product.spesifikasi }}</td>
                                 <td>{{ product.tanggal_masuk }}</td>
                                 <td>{{ product.tanggal_expired }}</td>
                             </tr>
@@ -215,6 +195,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     data() {
         return {
@@ -222,25 +204,17 @@ export default {
             currentPage: 1,
             perPage: 10,
             maxPageLinks: 5,
-            searchTerm: "", // Tambahkan properti searchTerm
+            searchTerm: "",
         };
     },
     computed: {
         totalPages() {
-            return Math.ceil(this.filteredProducts.length / this.perPage); // Ganti this.products menjadi this.filteredProducts
+            return Math.ceil(this.products.length / this.perPage);
         },
         displayedProducts() {
             const start = (this.currentPage - 1) * this.perPage;
             const end = start + this.perPage;
-            return this.filteredProducts.slice(start, end); // Ganti this.products menjadi this.filteredProducts
-        },
-        filteredProducts() {
-            // Filter produk berdasarkan searchTerm
-            return this.products.filter((product) => {
-                return product.product_name
-                    .toLowerCase()
-                    .includes(this.searchTerm.toLowerCase());
-            });
+            return this.products.slice(start, end);
         },
         pagesToShow() {
             const pageCount = this.totalPages;
@@ -264,18 +238,15 @@ export default {
         },
     },
     methods: {
-        // async fetchProducts() {
-        //     try {
-        //         const response = await fetch(
-        //             "http://kreatif.tobakab.go.id/api/produk"
-        //         );
-        //         let data = await response.json();
-        //         data.products.sort((a, b) => b.product_id - a.product_id);
-        //         this.products = data.products;
-        //     } catch (error) {
-        //         console.error("Error fetching products:", error);
-        //     }
-        // },
+        async fetchProducts() {
+            try {
+                const response = await axios.get("/stok");
+                console.log(response.data);
+                this.products = response.data;
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        },
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
@@ -293,9 +264,8 @@ export default {
             // Metode untuk menangani perubahan pada input pencarian
             this.currentPage = 1; // Reset halaman saat melakukan pencarian
         },
-        // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
         redirectToTambahProduk() {
-            // Mengarahkan pengguna ke halaman Tambah Produk
+            // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
             window.location.href = "http://127.0.0.1:8000/tambahproduk";
         },
     },
