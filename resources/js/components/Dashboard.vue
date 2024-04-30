@@ -116,8 +116,8 @@
                                 </td>
                                 <td>{{ product.product_name }}</td>
                                 <td>{{ product.stok }}</td>
-                                <td>{{ product.kategori }}</td>
-                                <td>{{ product.spesifikasi }}</td>
+                                <td>{{ product.nama_kategori }}</td>
+                                <td>{{ product.product_description }}</td>
                                 <td>{{ product.tanggal_masuk }}</td>
                                 <td>{{ product.tanggal_expired }}</td>
                             </tr>
@@ -209,12 +209,19 @@ export default {
     },
     computed: {
         totalPages() {
-            return Math.ceil(this.products.length / this.perPage);
+            return Math.ceil(this.filteredProducts.length / this.perPage);
         },
         displayedProducts() {
             const start = (this.currentPage - 1) * this.perPage;
             const end = start + this.perPage;
-            return this.products.slice(start, end);
+            return this.filteredProducts.slice(start, end);
+        },
+        filteredProducts() {
+            return this.products.filter((product) => {
+                return product.product_name
+                    .toLowerCase()
+                    .includes(this.searchTerm.toLowerCase());
+            });
         },
         pagesToShow() {
             const pageCount = this.totalPages;
@@ -242,7 +249,7 @@ export default {
             try {
                 const response = await axios.get("/stok");
                 console.log(response.data);
-                this.products = response.data;
+                this.products = response.data; // Ubah dari this.stok ke this.products
             } catch (error) {
                 console.error("Error fetching products:", error);
             }

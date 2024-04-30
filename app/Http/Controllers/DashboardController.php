@@ -9,7 +9,8 @@ class DashboardController extends Controller
 {
     public function Dashboard()
     {
-        return view('dashboard');
-    }    
+        $products = Product::all();
+        return view('Dashboard');
+    }
 
 }
