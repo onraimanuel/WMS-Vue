@@ -50,11 +50,7 @@
                                         <button
                                             class="btn btn-primary"
 
-                                            @click="goToEditProduct(index)"
-
-                                            @click="editProduct(index)"
-
-                                        >
+                                            @click="goToEditProductAndEditProduct(index)">                                     
                                             <i class="fas fa-pen nav-icon"></i>
                                             Edit
                                         </button>
@@ -133,12 +129,7 @@
                                         Tambah Produk
                                     </router-link>
 
-                                    <button
-                                        type="button"
-                                        class="btn btn-block bg-gradient-primary btn-sm"
-                                    >
-                                        Tambah Produk
-                                    </button>
+                                    
 
                                 </div>
                             </div>
@@ -229,10 +220,10 @@ export default {
         deleteProduct(index) {
             // Your delete product logic here
         },
-        goToEditProduct(index) {
-            const productId = this.displayedProducts[index].product_id;
-            this.$router.push({ path: `/editproduk/${productId}` });
-        },
+        goToEditAndEditProduct(index) {
+        this.goToEditProduct(index);
+        this.editProduct(index);
+    },
 
     },
     mounted() {
