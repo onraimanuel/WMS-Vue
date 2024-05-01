@@ -9,8 +9,8 @@ import LaporanStok from "./components/LaporanStok.vue";
 import TambahProduk from "./components/tambahproduk.vue";
 import EditProduk from "./components/editproduk.vue";
 
-import flatPickr from 'vue-flatpickr-component';
-import 'flatpickr/dist/flatpickr.css';
+import flatPickr from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
 
 // Membuat router
 const router = createRouter({
@@ -26,11 +26,8 @@ const router = createRouter({
     ],
 });
 
-// Membuat aplikasi
 const app = createApp({});
 app.use(router);
-app.component('flat-pickr', flatPickr);
+app.component("flat-pickr", flatPickr);
 
-// Mount aplikasi ke elemen dengan id "app"
 app.mount("#app");
-

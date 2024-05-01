@@ -22,7 +22,7 @@ Route::get('/ProdukToko',[ProdukController::class, 'Produk'])->name("ProdukToko"
 Route::get('/PembelianProduk',[ProdukController::class, 'PembelianProduk'])->name("PembelianProduk");
 Route::get('/LaporanPemesanan',[LaporanController::class, 'LaporanPemesanan'])->name("LaporanPemesanan");
 Route::get('/LaporanStok',[LaporanController::class, 'LaporanStok'])->name("LaporanStok");
-Route::get('/tambah-produk', [ProductController::class, 'create'])->name('tambah.produk');
+Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
 
 
 Route::get('/stok', [StokController::class, 'index']);

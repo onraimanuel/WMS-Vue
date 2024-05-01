@@ -6,101 +6,105 @@
                     <div class="card-header">
                         <h3 class="card-title">Data Produk</h3>
                     </div>
-                </div>
-                <div class="card-body table-responsive">
-                    <table
-                        id="example1"
-                        class="table table-bordered table-striped"
-                    >
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Produk</th>
-                                <th>Stok</th>
-                                <th>Kategori Produk</th>
-                                <th>Spesifikasi Produk</th>
-                                <th>Tanggal Masuk</th>
-                                <th>Tanggal Expired</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(product, index) in products"
-                                :key="index"
-                            >
-                                <td>
-                                    {{
-                                        index + 1 + (currentPage - 1) * perPage
-                                    }}
-                                </td>
-                                <td>{{ product.product_name }}</td>
-                                <td>{{ product.stok }}</td>
-                                <td>{{ product.nama_kategori }}</td>
-                                <td>{{ product.product_description }}</td>
-                                <td>{{ product.tanggal_masuk }}</td>
-                                <td>{{ product.tanggal_expired }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-6">
-                            <nav>
-                                <ul class="pagination justify-content-start">
-                                    <li
-                                        class="page-item"
-                                        :class="{
-                                            disabled: currentPage === 1,
-                                        }"
-                                    >
-                                        <button
-                                            class="page-link"
-                                            @click="prevPage"
-                                        >
-                                            &laquo;
-                                        </button>
-                                    </li>
-                                    <li
-                                        v-for="n in pagesToShow"
-                                        :key="n"
-                                        :class="{
-                                            'page-item': true,
-                                            active: currentPage === n,
-                                        }"
-                                    >
-                                        <button
-                                            class="page-link"
-                                            @click="gotoPage(n)"
-                                        >
-                                            {{ n }}
-                                        </button>
-                                    </li>
-                                    <li
-                                        class="page-item"
-                                        :class="{
-                                            disabled:
-                                                currentPage === totalPages,
-                                        }"
-                                    >
-                                        <button
-                                            class="page-link"
-                                            @click="nextPage"
-                                        >
-                                            &raquo;
-                                        </button>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="float-right">
-                                <button
-                                    type="button"
-                                    class="btn btn-block bg-gradient-primary btn-sm"
-                                    @click="redirectToTambahProduk"
+                    <div class="card-body table-responsive">
+                        <table
+                            id="example1"
+                            class="table table-bordered table-striped"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Produk</th>
+                                    <th>Stok</th>
+                                    <th>Kategori Produk</th>
+                                    <th>Spesifikasi Produk</th>
+                                    <th>Tanggal Masuk</th>
+                                    <th>Tanggal Expired</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(product, index) in products"
+                                    :key="index"
                                 >
-                                    Tambah Produk
-                                </button>
+                                    <td>
+                                        {{
+                                            index +
+                                            1 +
+                                            (currentPage - 1) * perPage
+                                        }}
+                                    </td>
+                                    <td>{{ product.product_name }}</td>
+                                    <td>{{ product.stok }}</td>
+                                    <td>{{ product.kategori }}</td>
+                                    <td>{{ product.spesifikasi }}</td>
+                                    <td>{{ product.tanggal_masuk }}</td>
+                                    <td>{{ product.tanggal_expired }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <nav>
+                                    <ul
+                                        class="pagination justify-content-start"
+                                    >
+                                        <li
+                                            class="page-item"
+                                            :class="{
+                                                disabled: currentPage === 1,
+                                            }"
+                                        >
+                                            <button
+                                                class="page-link"
+                                                @click="prevPage"
+                                            >
+                                                &laquo;
+                                            </button>
+                                        </li>
+                                        <li
+                                            v-for="n in pagesToShow"
+                                            :key="n"
+                                            :class="{
+                                                'page-item': true,
+                                                active: currentPage === n,
+                                            }"
+                                        >
+                                            <button
+                                                class="page-link"
+                                                @click="gotoPage(n)"
+                                            >
+                                                {{ n }}
+                                            </button>
+                                        </li>
+                                        <li
+                                            class="page-item"
+                                            :class="{
+                                                disabled:
+                                                    currentPage === totalPages,
+                                            }"
+                                        >
+                                            <button
+                                                class="page-link"
+                                                @click="nextPage"
+                                            >
+                                                &raquo;
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="float-right">
+                                    <button
+                                        type="button"
+                                        class="btn btn-block bg-gradient-primary btn-sm"
+                                        @click="redirectToTambahProduk"
+                                    >
+                                        Tambah Produk
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

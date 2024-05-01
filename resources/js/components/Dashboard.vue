@@ -116,8 +116,8 @@
                                 </td>
                                 <td>{{ product.product_name }}</td>
                                 <td>{{ product.stok }}</td>
-                                <td>{{ product.nama_kategori }}</td>
-                                <td>{{ product.product_description }}</td>
+                                <td>{{ product.kategori }}</td>
+                                <td>{{ product.spesifikasi }}</td>
                                 <td>{{ product.tanggal_masuk }}</td>
                                 <td>{{ product.tanggal_expired }}</td>
                             </tr>
@@ -268,12 +268,10 @@ export default {
             this.currentPage = page;
         },
         searchProducts() {
-            // Metode untuk menangani perubahan pada input pencarian
-            this.currentPage = 1; // Reset halaman saat melakukan pencarian
+            this.currentPage = 1;
         },
         redirectToTambahProduk() {
-            // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
-            window.location.href = "http://127.0.0.1:8000/tambahproduk";
+            this.$router.push("/TambahProduk");
         },
     },
     mounted() {

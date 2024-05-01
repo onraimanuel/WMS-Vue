@@ -8,7 +8,6 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-9">
-                            <!-- Show Entries -->
                             <div class="dataTables_length" id="example1_length">
                                 <label
                                     >Show
