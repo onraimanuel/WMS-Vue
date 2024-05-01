@@ -12,4 +12,8 @@ class ProdukController extends Controller
     public function PembelianProduk(){
         return view('PembelianProduk');
     }
+
+    public function Create(){
+        return view('TambahProduk');
+    }
 }

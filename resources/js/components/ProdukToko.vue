@@ -192,8 +192,7 @@ export default {
             this.currentPage = 1; // Reset halaman saat melakukan pencarian
         },
         redirectToTambahProduk() {
-            // Metode untuk mengarahkan pengguna ke halaman Tambah Produk
-            window.location.href = "http://127.0.0.1:8000/tambahproduk";
+            window.location.href = "/TambahProduk";
         },
     },
     mounted() {
