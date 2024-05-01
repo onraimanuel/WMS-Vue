@@ -5,7 +5,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Laporan Stok Barang</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <div class="row">
                         <div class="col-sm-9">
                             <!-- Show Entries -->
@@ -29,9 +29,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <!-- Tombol Print -->
                             <PrintButton class="btn btn-primary btn-block" />
-                            <!-- Include SearchInput component here -->
                             <SearchInput
                                 v-model="searchText"
                                 @search-input="handleSearchInput"

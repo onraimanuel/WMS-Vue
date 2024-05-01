@@ -132,3 +132,82 @@
         </div>
     </section>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            namaProduk: "",
+            namaToko: "",
+            kategoriProduk: "",
+            spesifikasiProduk: "",
+            jumlah: 0,
+            tanggalExpired: "",
+            products: [],
+        };
+    },
+
+    methods: {
+        async tambahProduk() {
+            if (
+                !this.namaProduk ||
+                !this.namaToko ||
+                !this.kategoriProduk ||
+                !this.spesifikasiProduk ||
+                this.jumlah <= 0 ||
+                !this.tanggalExpired
+            ) {
+                alert("Mohon lengkapi semua field");
+                return;
+            }
+            try {
+                const response = await fetch(backendURL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        product_name: this.namaProduk,
+                        merchant_id: this.namaToko,
+                        category_id: this.kategoriProduk,
+                        spesifikasiProduk: this.spesifikasiProduk,
+                        jumlah: this.jumlah,
+                        tanggalExpired: this.tanggalExpired,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to add product");
+                }
+
+                // Tambahkan produk ke dalam daftar produk
+                this.products.push({
+                    product_name: this.namaProduk,
+                    merchant_id: this.namaToko,
+                    category_id: this.kategoriProduk,
+                    spesifikasiProduk: this.spesifikasiProduk,
+                    jumlah: this.jumlah,
+                    tanggalExpired: this.tanggalExpired,
+                });
+
+                // Bersihkan input fields setelah produk berhasil ditambahkan
+                this.clearInputs();
+
+                alert("Produk berhasil ditambahkan");
+            } catch (error) {
+                //console.error("Error adding product:", error);
+                return error.message;
+            }
+        },
+        clearInputs() {
+            // Bersihkan nilai input setelah produk berhasil ditambahkan
+            this.namaProduk = "";
+            this.namaToko = "";
+            this.kategoriProduk = "";
+            this.spesifikasiProduk = "";
+            this.jumlah = 0;
+            this.tanggalExpired = "";
+        },
+    },
+};
+</script>

@@ -26,5 +26,7 @@ Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.p
 
 
 Route::get('/stok', [StokController::class, 'index']);
+Route::post('/addstock', [StokController::class, 'addStock']);
+
 
 

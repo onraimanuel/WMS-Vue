@@ -39,38 +39,40 @@
                             </div>
                         </div>
                     </div>
-                    <table
-                        id="example2"
-                        class="table table-bordered table-hover"
-                    >
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Purchase Order</th>
-                                <th>Nama Produk</th>
-                                <th>Nama Toko</th>
-                                <th>Jumlah</th>
-                                <th>Harga per Unit</th>
-                                <th>Total Harga</th>
-                                <th>Tanggal Pemesanan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(item, index) in laporanPemesanan"
-                                :key="index"
-                            >
-                                <td>{{ index + 1 }}</td>
-                                <td>{{ item.purchaseOrder }}</td>
-                                <td>{{ item.namaProduk }}</td>
-                                <td>{{ item.namaToko }}</td>
-                                <td>{{ item.jumlah }}</td>
-                                <td>{{ item.hargaPerUnit }}</td>
-                                <td>{{ item.totalHarga }}</td>
-                                <td>{{ item.tanggalPemesanan }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="card-body table-responsive">
+                        <table
+                            id="example2"
+                            class="table table-bordered table-hover"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Purchase Order</th>
+                                    <th>Nama Produk</th>
+                                    <th>Nama Toko</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga per Unit</th>
+                                    <th>Total Harga</th>
+                                    <th>Tanggal Pemesanan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(item, index) in laporanPemesanan"
+                                    :key="index"
+                                >
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ item.purchaseOrder }}</td>
+                                    <td>{{ item.namaProduk }}</td>
+                                    <td>{{ item.namaToko }}</td>
+                                    <td>{{ item.jumlah }}</td>
+                                    <td>{{ item.hargaPerUnit }}</td>
+                                    <td>{{ item.totalHarga }}</td>
+                                    <td>{{ item.tanggalPemesanan }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="row">
                         <div class="col-sm-12 col-md-5">

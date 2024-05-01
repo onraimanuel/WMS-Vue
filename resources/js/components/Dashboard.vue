@@ -12,7 +12,8 @@
                             <i class="ion ion-bag"></i>
                         </div>
                         <a href="/ProdukToko" class="small-box-footer"
-                            >More info <i class="fas fa-arrow-circle-right"></i
+                            >Info Lebih lanjut
+                            <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>
@@ -20,7 +21,6 @@
                     <div class="small-box bg-success">
                         <div class="inner">
                             <h3>53</h3>
-
                             <p>Perlu Diambil</p>
                         </div>
                         <div class="icon">
@@ -29,13 +29,13 @@
                         <a
                             href="http://127.0.0.1:8000/PembelianProduk"
                             class="small-box-footer"
-                            >More info <i class="fas fa-arrow-circle-right"></i
+                            >Info Lebih lanjut
+                            <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>
                 <!-- ./col -->
                 <div class="col-lg-3 col-6">
-                    <!-- small box -->
                     <div class="small-box bg-warning">
                         <div class="inner">
                             <h3>44</h3>
@@ -46,7 +46,8 @@
                             <i class="ion ion-person-add"></i>
                         </div>
                         <a href="/PembelianProduk" class="small-box-footer"
-                            >More info <i class="fas fa-arrow-circle-right"></i
+                            >Info Lebih lanjut
+                            <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>
@@ -60,7 +61,8 @@
                             <i class="ion ion-pie-graph"></i>
                         </div>
                         <a href="/LaporanPemesanan" class="small-box-footer"
-                            >More info <i class="fas fa-arrow-circle-right"></i
+                            >Info Lebih lanjut
+                            <i class="fas fa-arrow-circle-right"></i
                         ></a>
                     </div>
                 </div>

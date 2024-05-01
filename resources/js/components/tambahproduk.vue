@@ -13,25 +13,7 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-md-6">
-                            <!-- Label dan input "Nama Produk" -->
-                            <div class="form-group row">
-                                <label
-                                    for="namaProduk"
-                                    class="col-md-4 col-form-label text-md-right"
-                                    >Nama Produk</label
-                                >
-                                <div class="col-md-8">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="namaProduk"
-                                        name="namaProduk"
-                                        v-model="namaProduk"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <!-- Label dan input "Nama Toko" -->
+                            <!-- Dropdown dan input "Nama Toko" -->
                             <div class="form-group row">
                                 <label
                                     for="namaToko"
@@ -39,14 +21,23 @@
                                     >Nama Toko</label
                                 >
                                 <div class="col-md-8">
-                                    <input
-                                        type="number"
+                                    <select
+                                        v-model="selectedMerchant"
                                         class="form-control"
                                         id="namaToko"
                                         name="namaToko"
-                                        v-model="namaToko"
-                                        required
-                                    />
+                                    >
+                                        <option value="" disabled>
+                                            Pilih Toko
+                                        </option>
+                                        <option
+                                            v-for="merchant in merchants"
+                                            :key="merchant.merchant_id"
+                                            :value="merchant.merchant_id"
+                                        >
+                                            {{ merchant.nama_merchant }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <!-- Label dan input "Kategori Produk" -->
@@ -57,14 +48,49 @@
                                     >Kategori Produk</label
                                 >
                                 <div class="col-md-8">
-                                    <input
-                                        type="number"
+                                    <select
+                                        v-model="selectedCategory"
                                         class="form-control"
                                         id="kategoriProduk"
                                         name="kategoriProduk"
-                                        v-model="kategoriProduk"
-                                        required
-                                    />
+                                    >
+                                        <option value="" disabled>
+                                            Pilih Kategori
+                                        </option>
+                                        <option
+                                            v-for="category in categories"
+                                            :key="category.category_id"
+                                            :value="category.category_id"
+                                        >
+                                            {{ category.nama_kategori }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label
+                                    for="namaProduk"
+                                    class="col-md-4 col-form-label text-md-right"
+                                    >Nama Produk</label
+                                >
+                                <div class="col-md-8">
+                                    <select
+                                        v-model="selectedProduct"
+                                        class="form-control"
+                                        id="namaProduk"
+                                        name="namaProduk"
+                                    >
+                                        <option value="" disabled>
+                                            Pilih Produk
+                                        </option>
+                                        <option
+                                            v-for="product in products"
+                                            :key="product.product_id"
+                                            :value="product.product_id"
+                                        >
+                                            {{ product.product_name }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <!-- Label dan input "Spesifikasi Produk" -->
@@ -145,75 +171,97 @@ export default {
     data() {
         return {
             namaProduk: "",
-            namaToko: "",
-            kategoriProduk: "",
+            selectedMerchant: null,
+            selectedCategory: null,
             spesifikasiProduk: "",
             jumlah: 0,
             tanggalExpired: "",
+            merchants: [], // Menyimpan daftar tenant
+            categories: [],
             products: [],
         };
     },
 
-    methods: {
-        async tambahProduk() {
-            // Lakukan validasi data
-            if (
-                !this.namaProduk ||
-                !this.namaToko ||
-                !this.kategoriProduk ||
-                !this.spesifikasiProduk ||
-                this.jumlah <= 0 ||
-                !this.tanggalExpired
-            ) {
-                alert("Mohon lengkapi semua field");
-                return;
-            }
+    mounted() {
+        this.fetchMerchants();
+        this.fetchCategories();
+        this.fetchProducts();
+    },
 
-            // Kirim data produk ke server atau store Vuex
+    methods: {
+        async fetchMerchants() {
             try {
-                const response = await fetch(backendURL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        product_name: this.namaProduk,
-                        merchant_id: this.namaToko,
-                        category_id: this.kategoriProduk,
-                        //spesifikasiProduk: this.spesifikasiProduk,
-                        //jumlah: this.jumlah,
-                        //tanggalExpired: this.tanggalExpired,
-                    }),
-                });
+                const response = await fetch(
+                    "http://127.0.0.1:8001/api/daftartenant"
+                );
 
                 if (!response.ok) {
-                    throw new Error("Failed to add product");
+                    throw new Error("Failed to fetch merchants");
                 }
 
-                // Tambahkan produk ke dalam daftar produk
-                this.products.push({
-                    product_name: this.namaProduk,
-                    merchant_id: this.namaToko,
-                    category_id: this.kategoriProduk,
-                    spesifikasiProduk: this.spesifikasiProduk,
-                    jumlah: this.jumlah,
-                    tanggalExpired: this.tanggalExpired,
-                });
+                const data = await response.json();
 
-                // Bersihkan input fields setelah produk berhasil ditambahkan
-                this.clearInputs();
-
-                alert("Produk berhasil ditambahkan");
+                this.merchants = data;
             } catch (error) {
-                //console.error("Error adding product:", error);
-                return error.message;
+                console.error("Error fetching merchants:", error);
             }
         },
+
+        async fetchCategories() {
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:8001/api/pilihkategori"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch categories");
+                }
+
+                const data = await response.json();
+
+                this.categories = data;
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        },
+
+        async fetchProducts() {
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:8001/api/listdaftarproduk"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch products");
+                }
+
+                const data = await response.json();
+                this.products = data;
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        },
+        async tambahProduk() {
+            try {
+                const response = await axios.post("/addstock", {
+                    product_id: this.selectedProduct,
+                    jumlah: this.jumlah,
+                });
+
+                if (response.status === 200) {
+                    alert("Produk berhasil ditambahkan");
+                    this.$router.push("/ProdukToko");
+                }
+            } catch (error) {
+                console.error("Error adding product:", error);
+                alert("Gagal menambahkan produk");
+            }
+        },
+
         clearInputs() {
-            // Bersihkan nilai input setelah produk berhasil ditambahkan
-            this.namaProduk = "";
-            this.namaToko = "";
-            this.kategoriProduk = "";
+            this.selectedMerchant = null;
+            this.selectedCategory = null;
+            this.selectedProduct = null;
             this.spesifikasiProduk = "";
             this.jumlah = 0;
             this.tanggalExpired = "";

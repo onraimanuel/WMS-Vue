@@ -46,6 +46,5 @@ export default {
 <style scoped>
 .form-control mb-3 {
     border-color: #000000;
-    /* Sesuaikan warna border dengan warna latar belakang */
 }
 </style>

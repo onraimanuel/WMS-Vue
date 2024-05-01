@@ -99,7 +99,6 @@
 <script src="Asset/dist/js/demo.js"></script>
 <!-- Page specific script -->
 <script>
-<script>
   $(function () {
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,

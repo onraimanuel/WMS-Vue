@@ -7,93 +7,106 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-9">
-                            <div class="dataTables_length" id="example1_length">
-                                <label
-                                    >Show
-                                    <select
-                                        v-model="perPage"
-                                        class="custom-select custom-select-sm form-control form-control-sm"
-                                    >
-                                        <option
-                                            v-for="option in entryOptions"
-                                            :key="option"
-                                            :value="option"
+                        <div class="card-body table-responsive">
+                            <div class="col-sm-9">
+                                <div
+                                    class="dataTables_length"
+                                    id="example1_length"
+                                >
+                                    <label
+                                        >Show
+                                        <select
+                                            v-model="perPage"
+                                            class="custom-select custom-select-sm form-control form-control-sm"
                                         >
-                                            {{ option }}
-                                        </option>
-                                    </select>
-                                </label>
+                                            <option
+                                                v-for="option in entryOptions"
+                                                :key="option"
+                                                :value="option"
+                                            >
+                                                {{ option }}
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <!-- Include SearchInput component here -->
-                            <SearchInput
-                                v-model="searchText"
-                                @search-input="filterData"
-                                placeholder="Search"
-                                class="form-control"
-                            />
+                            <div class="col-sm-2">
+                                <!-- Include SearchInput component here -->
+                                <SearchInput
+                                    v-model="searchText"
+                                    @search-input="filterData"
+                                    placeholder="Search"
+                                    class="form-control"
+                                />
+                            </div>
+                            <table
+                                id="example1"
+                                class="table table-bordered table-striped"
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Purchase Order</th>
+                                        <th>Nama Produk</th>
+                                        <th>Nama Toko</th>
+                                        <th>Jumlah</th>
+                                        <th>Status</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(item, index) in filteredData"
+                                        :key="index"
+                                    >
+                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ item.purchaseOrder }}</td>
+                                        <td>{{ item.namaProduk }}</td>
+                                        <td>{{ item.namaToko }}</td>
+                                        <td>{{ item.jumlah }}</td>
+                                        <td>
+                                            <select
+                                                class="form-select"
+                                                v-model="item.status"
+                                            >
+                                                <option
+                                                    value="Perlu Dikirim"
+                                                    style="
+                                                        background-color: #ffe6e6;
+                                                    "
+                                                >
+                                                    Perlu Dikirim
+                                                </option>
+                                                <option
+                                                    value="Perlu Diambil"
+                                                    style="
+                                                        background-color: #ffffcc;
+                                                    "
+                                                >
+                                                    Perlu Diambil
+                                                </option>
+                                                <option
+                                                    value="Selesai"
+                                                    style="
+                                                        background-color: #ccffcc;
+                                                    "
+                                                >
+                                                    Selesai
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="#"
+                                                @click="showDetail(item)"
+                                                >Detail</a
+                                            >
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <table
-                        id="example1"
-                        class="table table-bordered table-striped"
-                    >
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Purchase Order</th>
-                                <th>Nama Produk</th>
-                                <th>Nama Toko</th>
-                                <th>Jumlah</th>
-                                <th>Status</th>
-                                <th>Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(item, index) in filteredData"
-                                :key="index"
-                            >
-                                <td>{{ index + 1 }}</td>
-                                <td>{{ item.purchaseOrder }}</td>
-                                <td>{{ item.namaProduk }}</td>
-                                <td>{{ item.namaToko }}</td>
-                                <td>{{ item.jumlah }}</td>
-                                <td>
-                                    <select
-                                        class="form-select"
-                                        v-model="item.status"
-                                    >
-                                        <option
-                                            value="Perlu Dikirim"
-                                            style="background-color: #ffe6e6"
-                                        >
-                                            Perlu Dikirim
-                                        </option>
-                                        <option
-                                            value="Perlu Diambil"
-                                            style="background-color: #ffffcc"
-                                        >
-                                            Perlu Diambil
-                                        </option>
-                                        <option
-                                            value="Selesai"
-                                            style="background-color: #ccffcc"
-                                        >
-                                            Selesai
-                                        </option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <a href="#" @click="showDetail(item)"
-                                        >Detail</a
-                                    >
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

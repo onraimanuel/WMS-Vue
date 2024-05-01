@@ -7,6 +7,7 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   @include("Header.Navbar")
+  @include("Header.Bar")
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
