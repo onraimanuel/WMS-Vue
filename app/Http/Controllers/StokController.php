@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
-use App\Models\categories;
-use App\Models\Stocks;
+use App\Models\Category;
+use App\Models\Stock;
+
 use Illuminate\Http\Request;
 
 class StokController extends Controller
@@ -11,10 +12,8 @@ class StokController extends Controller
     public function index()
     {
         try {
-            $stocks = Stocks::with('product.category')->get();
-            
-            // Menyiapkan data yang akan dijadikan respons JSON
-            $data = $stocks->map(function ($stock) {
+            $stocks = Stock::with('product.category')->get();
+                        $data = $stocks->map(function ($stock) {
                 return [
                     'product_name' => $stock->product->product_name,
                     'stok' => $stock->jumlah_stok,
@@ -35,20 +34,24 @@ class StokController extends Controller
     public function addStock(Request $request){
         try {
             $request->validate([
-                'product_id' => 'required|exists:products,id',
+                'product_id' => 'required|exists:products,product_id',
                 'jumlah' => 'required|numeric|min:1',
+                'tanggal_expired' => 'required|date',
             ]);
-
-            $stock = new Stocks();
+    
+            $stock = new Stock();
             $stock->product_id = $request->product_id;
             $stock->jumlah_stok = $request->jumlah;
             $stock->tanggal_masuk = now();
+            $stock->tanggal_expired = $request->tanggal_expired; // Memastikan tanggal_expired ada dalam request
+            $stock->lokasi = $request->lokasi;
             $stock->save();
-
+    
             return response()->json(['message' => 'Stok berhasil ditambahkan'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
 
 }

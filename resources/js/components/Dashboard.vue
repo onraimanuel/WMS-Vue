@@ -273,7 +273,7 @@ export default {
             this.currentPage = 1;
         },
         redirectToTambahProduk() {
-            this.$router.push("/TambahProduk");
+            window.location.href = "/TambahProduk";
         },
     },
     mounted() {

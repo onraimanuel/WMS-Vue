@@ -111,6 +111,24 @@
                                     />
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <label
+                                    for="lokasi"
+                                    class="col-md-4 col-form-label text-md-right"
+                                    >Lokasi</label
+                                >
+                                <div class="col-md-8">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="lokasi"
+                                        name="lokasi"
+                                        v-model="lokasi"
+                                        required
+                                    />
+                                </div>
+                            </div>
                             <!-- Label dan input "Jumlah" -->
                             <div class="form-group row">
                                 <label
@@ -167,6 +185,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     data() {
         return {
@@ -174,6 +193,7 @@ export default {
             selectedMerchant: null,
             selectedCategory: null,
             spesifikasiProduk: "",
+            lokasi: "",
             jumlah: 0,
             tanggalExpired: "",
             merchants: [], // Menyimpan daftar tenant
@@ -246,6 +266,8 @@ export default {
                 const response = await axios.post("/addstock", {
                     product_id: this.selectedProduct,
                     jumlah: this.jumlah,
+                    tanggal_expired: this.tanggalExpired, // Menambahkan tanggal_expired ke objek permintaan
+                    lokasi: this.lokasi,
                 });
 
                 if (response.status === 200) {
@@ -263,6 +285,7 @@ export default {
             this.selectedCategory = null;
             this.selectedProduct = null;
             this.spesifikasiProduk = "";
+            this.lokasi = "";
             this.jumlah = 0;
             this.tanggalExpired = "";
         },
