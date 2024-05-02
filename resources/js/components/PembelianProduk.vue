@@ -8,37 +8,39 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="card-body table-responsive">
-                            <div class="col-sm-9">
-                                <div
-                                    class="dataTables_length"
-                                    id="example1_length"
-                                >
-                                    <label
-                                        >Show
-                                        <select
-                                            v-model="perPage"
-                                            class="custom-select custom-select-sm form-control form-control-sm"
-                                        >
-                                            <option
-                                                v-for="option in entryOptions"
-                                                :key="option"
-                                                :value="option"
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <div
+                                        class="dataTables_length"
+                                        id="example1_length"
+                                    >
+                                        <label>
+                                            Show
+                                            <select
+                                                v-model="perPage"
+                                                class="custom-select custom-select-sm form-control form-control-sm"
                                             >
-                                                {{ option }}
-                                            </option>
-                                        </select>
-                                    </label>
+                                                <option
+                                                    v-for="option in entryOptions"
+                                                    :key="option"
+                                                    :value="option"
+                                                >
+                                                    {{ option }}
+                                                </option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <SearchInput
+                                        v-model="searchText"
+                                        @search-input="filterData"
+                                        placeholder="Search"
+                                        class="form-control"
+                                    />
                                 </div>
                             </div>
-                            <div class="col-sm-2">
-                                <!-- Include SearchInput component here -->
-                                <SearchInput
-                                    v-model="searchText"
-                                    @search-input="filterData"
-                                    placeholder="Search"
-                                    class="form-control"
-                                />
-                            </div>
+                            <br />
                             <table
                                 id="example1"
                                 class="table table-bordered table-striped"
@@ -60,41 +62,13 @@
                                         :key="index"
                                     >
                                         <td>{{ index + 1 }}</td>
-                                        <td>{{ item.purchaseOrder }}</td>
-                                        <td>{{ item.namaProduk }}</td>
-                                        <td>{{ item.namaToko }}</td>
-                                        <td>{{ item.jumlah }}</td>
+                                        <td>{{ item.kode_pembelian }}</td>
+                                        <td>{{ item.product_name }}</td>
+                                        <td>{{ item.nama_merchant }}</td>
                                         <td>
-                                            <select
-                                                class="form-select"
-                                                v-model="item.status"
-                                            >
-                                                <option
-                                                    value="Perlu Dikirim"
-                                                    style="
-                                                        background-color: #ffe6e6;
-                                                    "
-                                                >
-                                                    Perlu Dikirim
-                                                </option>
-                                                <option
-                                                    value="Perlu Diambil"
-                                                    style="
-                                                        background-color: #ffffcc;
-                                                    "
-                                                >
-                                                    Perlu Diambil
-                                                </option>
-                                                <option
-                                                    value="Selesai"
-                                                    style="
-                                                        background-color: #ccffcc;
-                                                    "
-                                                >
-                                                    Selesai
-                                                </option>
-                                            </select>
+                                            {{ item.jumlah_pembelian_produk }}
                                         </td>
+                                        <td>{{ item.status_pembelian }}</td>
                                         <td>
                                             <a
                                                 href="#"
@@ -107,14 +81,77 @@
                             </table>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <div class="float-left">
+                            <ul class="pagination pagination-sm m-0">
+                                <li
+                                    class="page-item"
+                                    :class="{ disabled: currentPage === 1 }"
+                                >
+                                    <a
+                                        href="#"
+                                        class="page-link"
+                                        @click.prevent="prevPage"
+                                        >&laquo;</a
+                                    >
+                                </li>
+                                <li
+                                    class="page-item"
+                                    v-for="page in pagesToShow"
+                                    :key="page"
+                                    :class="{ active: page === currentPage }"
+                                >
+                                    <a
+                                        href="#"
+                                        class="page-link"
+                                        @click.prevent="changePage(page)"
+                                        >{{ page }}</a
+                                    >
+                                </li>
+                                <li
+                                    class="page-item"
+                                    :class="{
+                                        disabled: currentPage === totalPages,
+                                    }"
+                                >
+                                    <a
+                                        href="#"
+                                        class="page-link"
+                                        @click.prevent="nextPage"
+                                        >&raquo;</a
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="float-right">
+                            <div class="dataTables_length" id="example1_length">
+                                <label>
+                                    Show
+                                    <select
+                                        v-model="perPage"
+                                        class="custom-select custom-select-sm form-control form-control-sm"
+                                        @change="updatePerPage"
+                                    >
+                                        <option
+                                            v-for="option in entryOptions"
+                                            :key="option"
+                                            :value="option"
+                                        >
+                                            {{ option }}
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Detail Modal -->
         <div
-            class="modal fade"
             id="detailModal"
+            class="modal fade"
             tabindex="-1"
             role="dialog"
             aria-labelledby="detailpembelianbarang"
@@ -145,8 +182,7 @@
                                     type="text"
                                     class="form-control"
                                     id="purchaseOrder"
-                                    v-model="selectedItem.purchaseOrder"
-                                    disabled
+                                    v-model="selectedItem.kode_pembelian"
                                 />
                             </div>
                             <div class="form-group">
@@ -155,8 +191,7 @@
                                     type="text"
                                     class="form-control"
                                     id="namaCustomer"
-                                    v-model="selectedItem.namaCustomer"
-                                    disabled
+                                    v-model="selectedItem.name"
                                 />
                             </div>
                             <div class="form-group">
@@ -165,8 +200,7 @@
                                     type="text"
                                     class="form-control"
                                     id="pemesananBarang"
-                                    v-model="selectedItem.namaProduk"
-                                    disabled
+                                    v-model="selectedItem.product_name"
                                 />
                             </div>
                             <div class="form-group">
@@ -178,7 +212,6 @@
                                     class="form-control"
                                     id="jumlahPesanan"
                                     v-model="selectedItem.jumlah"
-                                    disabled
                                 />
                             </div>
                             <div class="form-group">
@@ -187,8 +220,7 @@
                                     type="text"
                                     class="form-control"
                                     id="namaToko"
-                                    v-model="selectedItem.namaToko"
-                                    disabled
+                                    v-model="selectedItem.merchant_name"
                                 />
                             </div>
                             <div class="form-group">
@@ -198,7 +230,6 @@
                                     id="alamat"
                                     v-model="selectedItem.alamat"
                                     rows="3"
-                                    disabled
                                 ></textarea>
                             </div>
                             <div class="form-group">
@@ -207,7 +238,6 @@
                                     class="form-control"
                                     id="status"
                                     v-model="selectedItem.status"
-                                    disabled
                                 >
                                     <option
                                         value="Perlu Dikirim"
@@ -229,6 +259,14 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="float-right">
+                                <button
+                                    type="button"
+                                    class="btn btn-block bg-gradient-primary btn-sm"
+                                >
+                                    Simpan
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -239,6 +277,7 @@
 
 <script>
 import SearchInput from "@/components/SearchInput.vue";
+import axios from "axios";
 
 export default {
     components: {
@@ -246,40 +285,11 @@ export default {
     },
     data() {
         return {
-            pembelianProduk: [
-                {
-                    purchaseOrder: "001",
-                    namaProduk: "Kripik",
-                    namaToko: "Bramstam",
-                    jumlah: 1,
-                    status: "Perlu Dikirim",
-                    namaCustomer: "Loeis",
-                    alamat: "Jl. Raya No. 123",
-                },
-                {
-                    purchaseOrder: "002",
-                    namaProduk: "Kripik",
-                    namaToko: "Bramstam",
-                    jumlah: 1,
-                    status: "Perlu Diambil",
-                    namaCustomer: "Loeis",
-                    alamat: "Jl. Raya No. 123",
-                },
-                {
-                    purchaseOrder: "003",
-                    namaProduk: "Kripik",
-                    namaToko: "Bramstam",
-                    jumlah: 1,
-                    status: "Selesai",
-                    namaCustomer: "Loeis",
-                    alamat: "Jl. Raya No. 123",
-                },
-            ],
+            product_purchases: [],
             filteredData: [],
             searchText: "",
             currentPage: 1,
             perPage: 10,
-            maxPageLinks: 5,
             entryOptions: [5, 10, 15, 20],
             selectedItem: null,
         };
@@ -288,31 +298,94 @@ export default {
         totalPages() {
             return Math.ceil(this.filteredData.length / this.perPage);
         },
+        startIndex() {
+            return (this.currentPage - 1) * this.perPage;
+        },
+        endIndex() {
+            return this.startIndex + this.perPage;
+        },
     },
     created() {
-        this.filteredData = this.pembelianProduk;
+        axios
+            .get("http://127.0.0.1:8001/api/pembelian")
+            .then((response) => {
+                this.product_purchases = response.data.product_purchases;
+                this.filteredData = this.product_purchases;
+            })
+            .catch((error) => {
+                console.error("Error fetching pembelian data:", error);
+            });
     },
+
     methods: {
         filterData() {
-            this.filteredData = this.pembelianProduk.filter(
+            // Filter data based on searchText
+            this.filteredData = this.product_purchases.filter(
                 (item) =>
-                    item.purchaseOrder
+                    item.purchase_id
+                        .toString()
                         .toLowerCase()
                         .includes(this.searchText.toLowerCase()) ||
-                    item.namaProduk
+                    item.kode_pembelian
                         .toLowerCase()
                         .includes(this.searchText.toLowerCase()) ||
-                    item.namaToko
+                    item.status_pembelian
                         .toLowerCase()
                         .includes(this.searchText.toLowerCase()) ||
-                    item.status
+                    item.name
+                        .toLowerCase()
+                        .includes(this.searchText.toLowerCase()) ||
+                    item.username
                         .toLowerCase()
                         .includes(this.searchText.toLowerCase())
             );
         },
+
         showDetail(item) {
-            this.selectedItem = item;
-            $("#detailModal").modal("show");
+            axios
+                .get(
+                    `http://127.0.0.1:8001/api/pembelian?purchase_id=${item.purchase_id}`
+                )
+                .then((response) => {
+                    const selectedPurchase = response.data.purchases[0];
+                    const selectedProduct =
+                        response.data.product_purchases.find(
+                            (product) =>
+                                product.purchase_id === item.purchase_id
+                        );
+                    this.selectedItem = {
+                        kode_pembelian: selectedPurchase.kode_pembelian,
+                        name: selectedPurchase.name,
+                        product_name: selectedProduct.product_name,
+                        jumlah: selectedProduct.jumlah_pembelian_produk,
+                        merchant_name: selectedProduct.nama_merchant,
+                        status: selectedPurchase.status_pembelian,
+                        alamat: selectedPurchase.alamat_pengiriman,
+                    };
+                    // Tampilkan modal
+                    $("#detailModal").modal("show");
+                })
+                .catch((error) => {
+                    console.error("Error fetching item detail:", error);
+                });
+        },
+
+        changePage(page) {
+            this.currentPage = page;
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        updatePerPage() {
+            // You can implement logic here if needed
+            this.filterData();
         },
     },
 };

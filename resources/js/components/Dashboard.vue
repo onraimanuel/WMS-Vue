@@ -239,7 +239,6 @@ export default {
             if (endPage - startPage + 1 < maxPageLinks) {
                 startPage = Math.max(1, endPage - maxPageLinks + 1);
             }
-
             return Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => startPage + i
@@ -251,7 +250,7 @@ export default {
             try {
                 const response = await axios.get("/stok");
                 console.log(response.data);
-                this.products = response.data; // Ubah dari this.stok ke this.products
+                this.products = response.data;
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
