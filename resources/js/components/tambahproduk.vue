@@ -139,7 +139,6 @@
                                     />
                                 </div>
                             </div>
-                            <!-- Label dan input "Tanggal Expired" -->
                             <div class="form-group row">
                                 <label
                                     for="tanggalExpired"
@@ -188,7 +187,7 @@ export default {
             lokasi: "",
             jumlah: 0,
             tanggalExpired: "",
-            merchants: [], // Menyimpan daftar tenant
+            merchants: [],
             categories: [],
             products: [],
         };
@@ -258,7 +257,7 @@ export default {
                 const response = await axios.post("/addstock", {
                     product_id: this.selectedProduct,
                     jumlah: this.jumlah,
-                    tanggal_expired: this.tanggalExpired, // Menambahkan tanggal_expired ke objek permintaan
+                    tanggal_expired: this.tanggalExpired,
                     lokasi: this.lokasi,
                 });
 

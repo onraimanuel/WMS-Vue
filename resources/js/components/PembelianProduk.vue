@@ -58,10 +58,16 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        v-for="(item, index) in filteredData"
+                                        v-for="(item, index) in paginatedData"
                                         :key="index"
                                     >
-                                        <td>{{ index + 1 }}</td>
+                                        <td>
+                                            {{
+                                                (currentPage - 1) * perPage +
+                                                index +
+                                                1
+                                            }}
+                                        </td>
                                         <td>{{ item.kode_pembelian }}</td>
                                         <td>{{ item.product_name }}</td>
                                         <td>{{ item.nama_merchant }}</td>
@@ -79,33 +85,35 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="float-left">
-                            <ul class="pagination pagination-sm m-0">
+                            <br />
+                            <ul class="pagination">
                                 <li
                                     class="page-item"
                                     :class="{ disabled: currentPage === 1 }"
                                 >
                                     <a
-                                        href="#"
                                         class="page-link"
+                                        href="#"
+                                        aria-label="Previous"
                                         @click.prevent="prevPage"
-                                        >&laquo;</a
                                     >
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
                                 </li>
                                 <li
                                     class="page-item"
-                                    v-for="page in pagesToShow"
-                                    :key="page"
-                                    :class="{ active: page === currentPage }"
+                                    v-for="pageNumber in displayedPages"
+                                    :key="pageNumber"
+                                    :class="{
+                                        active: pageNumber === currentPage,
+                                    }"
                                 >
                                     <a
-                                        href="#"
                                         class="page-link"
-                                        @click.prevent="changePage(page)"
-                                        >{{ page }}</a
+                                        href="#"
+                                        @click.prevent="changePage(pageNumber)"
+                                        >{{ pageNumber }}</a
                                     >
                                 </li>
                                 <li
@@ -115,33 +123,16 @@
                                     }"
                                 >
                                     <a
-                                        href="#"
                                         class="page-link"
+                                        href="#"
+                                        aria-label="Next"
                                         @click.prevent="nextPage"
-                                        >&raquo;</a
                                     >
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
                                 </li>
                             </ul>
-                        </div>
-                        <div class="float-right">
-                            <div class="dataTables_length" id="example1_length">
-                                <label>
-                                    Show
-                                    <select
-                                        v-model="perPage"
-                                        class="custom-select custom-select-sm form-control form-control-sm"
-                                        @change="updatePerPage"
-                                    >
-                                        <option
-                                            v-for="option in entryOptions"
-                                            :key="option"
-                                            :value="option"
-                                        >
-                                            {{ option }}
-                                        </option>
-                                    </select>
-                                </label>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -298,11 +289,26 @@ export default {
         totalPages() {
             return Math.ceil(this.filteredData.length / this.perPage);
         },
-        startIndex() {
-            return (this.currentPage - 1) * this.perPage;
+        paginatedData() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.filteredData.slice(start, end);
         },
-        endIndex() {
-            return this.startIndex + this.perPage;
+        displayedPages() {
+            const maxDisplayedPages = 5; // Define maximum displayed pages
+            const startPage = Math.max(
+                1,
+                this.currentPage - Math.floor(maxDisplayedPages / 2)
+            );
+            const endPage = Math.min(
+                this.totalPages,
+                startPage + maxDisplayedPages - 1
+            );
+            const pages = [];
+            for (let i = startPage; i <= endPage; i++) {
+                pages.push(i);
+            }
+            return pages;
         },
     },
     created() {
@@ -318,36 +324,15 @@ export default {
     },
 
     methods: {
-        filterData() {
-            // Filter data based on searchText
-            this.filteredData = this.product_purchases.filter(
-                (item) =>
-                    item.purchase_id
-                        .toString()
-                        .toLowerCase()
-                        .includes(this.searchText.toLowerCase()) ||
-                    item.kode_pembelian
-                        .toLowerCase()
-                        .includes(this.searchText.toLowerCase()) ||
-                    item.status_pembelian
-                        .toLowerCase()
-                        .includes(this.searchText.toLowerCase()) ||
-                    item.name
-                        .toLowerCase()
-                        .includes(this.searchText.toLowerCase()) ||
-                    item.username
-                        .toLowerCase()
-                        .includes(this.searchText.toLowerCase())
-            );
-        },
-
         showDetail(item) {
             axios
                 .get(
                     `http://127.0.0.1:8001/api/pembelian?purchase_id=${item.purchase_id}`
                 )
                 .then((response) => {
-                    const selectedPurchase = response.data.purchases[0];
+                    const selectedPurchase = response.data.purchases.find(
+                        (purchase) => purchase.purchase_id === item.purchase_id
+                    );
                     const selectedProduct =
                         response.data.product_purchases.find(
                             (product) =>
@@ -362,16 +347,14 @@ export default {
                         status: selectedPurchase.status_pembelian,
                         alamat: selectedPurchase.alamat_pengiriman,
                     };
-                    // Tampilkan modal
                     $("#detailModal").modal("show");
                 })
                 .catch((error) => {
                     console.error("Error fetching item detail:", error);
                 });
         },
-
-        changePage(page) {
-            this.currentPage = page;
+        changePage(pageNumber) {
+            this.currentPage = pageNumber;
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {
@@ -382,10 +365,6 @@ export default {
             if (this.currentPage > 1) {
                 this.currentPage--;
             }
-        },
-        updatePerPage() {
-            // You can implement logic here if needed
-            this.filterData();
         },
     },
 };
