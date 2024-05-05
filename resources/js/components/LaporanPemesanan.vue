@@ -169,6 +169,11 @@ export default {
     },
     methods: {
         search() {
+            if (this.datefilter && !this.endDateFilter) {
+            alert("Mohon untuk mengisi End Date");
+            return; 
+        }
+            
             const startDate = moment(this.datefilter, "DD-MM-YYYY").toDate();
             const endDate = moment(this.endDateFilter, "DD-MM-YYYY").toDate();
 
@@ -184,6 +189,11 @@ export default {
                     );
                 }
             );
+
+            if (filteredLaporanPemesanan.length === 0) {
+            alert("Tidak ada data laporan pemesanan barang yang sesuai dengan rentang tanggal yang dipilih.");
+            return;
+        }
 
             this.laporanPemesanan = filteredLaporanPemesanan;
         },
