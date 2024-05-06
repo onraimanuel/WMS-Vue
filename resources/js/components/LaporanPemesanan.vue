@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import moment from "moment";
 import flatPickr from "vue-flatpickr-component";
 
@@ -103,68 +104,10 @@ export default {
     },
     data() {
         return {
-            datePickerConfig: {
-                dateFormat: "d/m/Y",
-            },
+            laporanPemesananAwal: [],
+            laporanPemesanan: [],
             datefilter: "",
             endDateFilter: "",
-            laporanPemesananAwal: [
-                {
-                    purchaseOrder: "01",
-                    namaProduk: "Sasagun Andaliman",
-                    namaToko: "Bramstam",
-                    jumlah: 1,
-                    hargaPerUnit: "10.000",
-                    totalHarga: "10.000",
-                    tanggalPemesanan: "26/11/2023",
-                },
-                {
-                    purchaseOrder: "02",
-                    namaProduk: "Sasagun Andaliman",
-                    namaToko: "Bramstam",
-                    jumlah: 1,
-                    hargaPerUnit: "10.000",
-                    totalHarga: "10.000",
-                    tanggalPemesanan: "26/11/2023",
-                },
-                {
-                    purchaseOrder: "03",
-                    namaProduk: "Sasagun Andaliman",
-                    namaToko: "Bramstam",
-                    jumlah: 1,
-                    hargaPerUnit: "10.000",
-                    totalHarga: "10.000",
-                    tanggalPemesanan: "26/11/2023",
-                },
-                {
-                    purchaseOrder: "04",
-                    namaProduk: "Keripik Pisang",
-                    namaToko: "Keripik Noel",
-                    jumlah: 1,
-                    hargaPerUnit: "10.000",
-                    totalHarga: "10.000",
-                    tanggalPemesanan: "29/12/2023",
-                },
-                {
-                    purchaseOrder: "05",
-                    namaProduk: "Keripik Pisang",
-                    namaToko: "Keripik Noel",
-                    jumlah: 1,
-                    hargaPerUnit: "10.000",
-                    totalHarga: "10.000",
-                    tanggalPemesanan: "29/12/2023",
-                },
-                {
-                    purchaseOrder: "06",
-                    namaProduk: "Keripik Pisang",
-                    namaToko: "Keripik Noel",
-                    jumlah: 1,
-                    hargaPerUnit: "10.000",
-                    totalHarga: "10.000",
-                    tanggalPemesanan: "29/12/2023",
-                },
-            ],
-            laporanPemesanan: [],
         };
     },
     methods: {
@@ -176,6 +119,19 @@ export default {
             
             const startDate = moment(this.datefilter, "DD-MM-YYYY").toDate();
             const endDate = moment(this.endDateFilter, "DD-MM-YYYY").toDate();
+
+            axios
+
+            .get(`http://127.0.0.1:8001/api/pembelian?start_date=${startDate}&end_date=${endDate}`)
+                .then((response) => {
+                    this.laporanPemesanan = response.data;
+                    if (this.laporanPemesanan.length === 0) {
+                        alert("Tidak ada data laporan pemesanan barang yang sesuai dengan rentang tanggal yang dipilih.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
 
             const filteredLaporanPemesanan = this.laporanPemesananAwal.filter(
                 (item) => {
@@ -199,6 +155,16 @@ export default {
         },
     },
     mounted() {
+        axios
+        .get("http://127.0.0.1:8001/api/pembelian")
+            .then((response) => {
+                this.laporanPemesananAwal = response.data;
+                this.laporanPemesanan = response.data;
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+
         this.laporanPemesanan = this.laporanPemesananAwal;
 
         $(function () {
