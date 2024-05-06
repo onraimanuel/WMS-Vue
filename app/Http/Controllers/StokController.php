@@ -26,7 +26,6 @@ class StokController extends Controller
     
             return response()->json($data);
         } catch (\Exception $e) {
-            // Tangani kesalahan jika terjadi
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

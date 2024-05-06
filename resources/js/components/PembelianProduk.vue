@@ -223,6 +223,7 @@
                                     rows="3"
                                 ></textarea>
                             </div>
+
                             <div class="form-group">
                                 <label for="status">Status</label>
                                 <select
@@ -295,7 +296,7 @@ export default {
             return this.filteredData.slice(start, end);
         },
         displayedPages() {
-            const maxDisplayedPages = 5; // Define maximum displayed pages
+            const maxDisplayedPages = 5;
             const startPage = Math.max(
                 1,
                 this.currentPage - Math.floor(maxDisplayedPages / 2)
@@ -338,21 +339,35 @@ export default {
                             (product) =>
                                 product.purchase_id === item.purchase_id
                         );
-                    this.selectedItem = {
-                        kode_pembelian: selectedPurchase.kode_pembelian,
-                        name: selectedPurchase.name,
-                        product_name: selectedProduct.product_name,
-                        jumlah: selectedProduct.jumlah_pembelian_produk,
-                        merchant_name: selectedProduct.nama_merchant,
-                        status: selectedPurchase.status_pembelian,
-                        alamat: selectedPurchase.alamat_pengiriman,
-                    };
-                    $("#detailModal").modal("show");
+                    if (selectedPurchase && selectedProduct) {
+                        this.selectedItem = {
+                            kode_pembelian: selectedPurchase.kode_pembelian,
+                            name: selectedPurchase.name,
+                            product_name: selectedProduct.product_name,
+                            jumlah: selectedProduct.jumlah_pembelian_produk,
+                            merchant_name: selectedProduct.nama_merchant,
+                            status: selectedProduct.status_pembelian,
+                            alamat:
+                                selectedProduct.user_street_address +
+                                ", " +
+                                selectedProduct.subdistrict_name +
+                                ", " +
+                                selectedProduct.city_name +
+                                ", " +
+                                selectedProduct.province_name,
+                        };
+                        $("#detailModal").modal("show");
+                    } else {
+                        console.error(
+                            "Data not found for the selected purchase."
+                        );
+                    }
                 })
                 .catch((error) => {
                     console.error("Error fetching item detail:", error);
                 });
         },
+
         changePage(pageNumber) {
             this.currentPage = pageNumber;
         },
