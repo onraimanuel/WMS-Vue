@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Stock;
-
+use App\Models\Merchants;
 use Illuminate\Http\Request;
 
 class StokController extends Controller
@@ -12,10 +12,11 @@ class StokController extends Controller
     public function index()
     {
         try {
-            $stocks = Stock::with('product.category')->get();
-                        $data = $stocks->map(function ($stock) {
+            $stocks = Stock::with(['product.category', 'merchant'])->get();
+            $data = $stocks->map(function ($stock) {
                 return [
                     'product_name' => $stock->product->product_name,
+                    'merchant_name' => $stock->merchant->nama_merchant, // Ubah merchant_id menjadi nama_merchant
                     'stok' => $stock->jumlah_stok,
                     'kategori' => $stock->product->category ? $stock->product->category->nama_kategori : null,
                     'spesifikasi' => $stock->product->product_description,
@@ -40,9 +41,10 @@ class StokController extends Controller
     
             $stock = new Stock();
             $stock->product_id = $request->product_id;
+            $stock->merchant_id = $request->merchant_id;
             $stock->jumlah_stok = $request->jumlah;
             $stock->tanggal_masuk = now();
-            $stock->tanggal_expired = $request->tanggal_expired; // Memastikan tanggal_expired ada dalam request
+            $stock->tanggal_expired = $request->tanggal_expired;
             $stock->lokasi = $request->lokasi;
             $stock->save();
     

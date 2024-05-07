@@ -99,6 +99,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Produk</th>
+                                <th>Nama Tenant</th>
                                 <th>Stok</th>
                                 <th>Kategori Produk</th>
                                 <th>Spesifikasi Produk</th>
@@ -117,6 +118,7 @@
                                     }}
                                 </td>
                                 <td>{{ product.product_name }}</td>
+                                <td>{{ product.merchant_name }}</td>
                                 <td>{{ product.stok }}</td>
                                 <td>{{ product.kategori }}</td>
                                 <td>{{ product.spesifikasi }}</td>

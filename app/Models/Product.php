@@ -24,6 +24,7 @@ class Product extends Model
     protected $fillable = [
         'merchant_id',
         'category_id',
+        'merchant_id',
         'product_name',
         'on_warehouse',
         'is_deleted',

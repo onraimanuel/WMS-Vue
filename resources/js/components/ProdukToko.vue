@@ -169,7 +169,7 @@ export default {
             try {
                 const response = await axios.get("/stok");
                 console.log(response.data);
-                this.products = response.data; // Ubah dari this.stok ke this.products
+                this.products = response.data;
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -188,8 +188,7 @@ export default {
             this.currentPage = page;
         },
         searchProducts() {
-            // Metode untuk menangani perubahan pada input pencarian
-            this.currentPage = 1; // Reset halaman saat melakukan pencarian
+            this.currentPage = 1;
         },
         redirectToTambahProduk() {
             window.location.href = "/TambahProduk";

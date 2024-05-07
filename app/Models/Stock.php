@@ -22,6 +22,7 @@ class Stock extends Model
     protected $fillable = [
         'stocks_id',
         'product_id',
+        'merchant_id',
         'category_id',
         'jumlah_stok',
         'tanggal_masuk',
@@ -37,6 +38,11 @@ class Stock extends Model
     public function category()
     {
         return $this->product->belongsTo(Category::class, 'category_id', 'category_id');
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchants::class, 'merchant_id', 'merchant_id');
     }
     
 }

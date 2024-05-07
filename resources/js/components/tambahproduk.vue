@@ -181,7 +181,7 @@ export default {
     data() {
         return {
             namaProduk: "",
-            selectedMerchant: null,
+            selectedMerchant: "",
             selectedCategory: null,
             spesifikasiProduk: "",
             lokasi: "",
@@ -256,6 +256,7 @@ export default {
             try {
                 const response = await axios.post("/addstock", {
                     product_id: this.selectedProduct,
+                    merchant_id: this.selectedMerchant,
                     jumlah: this.jumlah,
                     tanggal_expired: this.tanggalExpired,
                     lokasi: this.lokasi,

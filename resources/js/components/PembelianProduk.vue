@@ -317,7 +317,13 @@ export default {
             .get("http://127.0.0.1:8001/api/pembelian")
             .then((response) => {
                 this.product_purchases = response.data.product_purchases;
-                this.filteredData = this.product_purchases;
+                this.filteredData = this.product_purchases.map((item) => ({
+                    ...item,
+                    status_pembelian: this.getStatusPembelian(
+                        item.status_pembelian,
+                        item.proof_of_payment_image
+                    ),
+                }));
             })
             .catch((error) => {
                 console.error("Error fetching pembelian data:", error);
@@ -325,6 +331,45 @@ export default {
     },
 
     methods: {
+        getStatusPembelian(status_pembelian, proof_of_payment_image) {
+            let status = "";
+            if (
+                status_pembelian === "status1" ||
+                status_pembelian === "status1_ambil"
+            ) {
+                if (proof_of_payment_image) {
+                    status =
+                        "Bukti Pembayaran Telah Dikirim. SILAHKAN KONFIRMASI.";
+                } else {
+                    status =
+                        "Belum Dapat Dikonfirmasi. TUNGGU BUKTI PEMBAYARAN.";
+                }
+            } else if (
+                status_pembelian === "status2" ||
+                status_pembelian === "status2_ambil"
+            ) {
+                status = "Pesanan Sedang Diproses. TUNGGU PESANAN DIPROSES.";
+            } else if (status_pembelian === "status3_ambil") {
+                status = "MENUNGGU PELANGGAN MENGAMBIL PESANAN.";
+            } else if (status_pembelian === "status3") {
+                status =
+                    "Pesanan Sedang Dalam Perjalanan. TUNGGU PESANAN DITERIMA.";
+            } else if (status_pembelian === "status4_ambil_a") {
+                status =
+                    "Pesanan telah diberikan. TUNGGU PELANGGAN MENGKONFIRMASI PESANAN YANG TELAH DIAMBIL.";
+            } else if (
+                status_pembelian === "status4" ||
+                status_pembelian === "status4_ambil_b"
+            ) {
+                status = "Transaksi Sukses. SILAHKAN KIRIM BAYARAN.";
+            } else if (
+                status_pembelian === "status5" ||
+                status_pembelian === "status5_ambil"
+            ) {
+                status = "PENJUALAN DAN PEMBELIAN BERHASIL.";
+            }
+            return status;
+        },
         showDetail(item) {
             axios
                 .get(

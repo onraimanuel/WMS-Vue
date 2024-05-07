@@ -20,12 +20,14 @@
                                 <flat-pickr
                                     v-model="datefilter"
                                     :config="datePickerConfig"
+                                    :dateFormat="dateFormat"
                                 ></flat-pickr>
                             </div>
                             <div class="col-md-3">
                                 <flat-pickr
                                     v-model="endDateFilter"
                                     :config="datePickerConfig"
+                                    :dateFormat="dateFormat"
                                 ></flat-pickr>
                             </div>
                             <div class="col-md-2 align-self-end">
@@ -58,33 +60,73 @@
                             </thead>
                             <tbody>
                                 <tr
-                                    v-for="(item, index) in laporanPemesanan"
+                                    v-for="(purchase, index) in paginatedData"
                                     :key="index"
                                 >
-                                    <td>{{ index + 1 }}</td>
-                                    <td>{{ item.purchaseOrder }}</td>
-                                    <td>{{ item.namaProduk }}</td>
-                                    <td>{{ item.namaToko }}</td>
-                                    <td>{{ item.jumlah }}</td>
-                                    <td>{{ item.hargaPerUnit }}</td>
-                                    <td>{{ item.totalHarga }}</td>
-                                    <td>{{ item.tanggalPemesanan }}</td>
+                                    <td>{{ startIndex + index }}</td>
+                                    <td>{{ purchase.kode_pembelian }}</td>
+                                    <td>{{ purchase.product_name }}</td>
+                                    <td>{{ purchase.nama_merchant }}</td>
+                                    <td>
+                                        {{ purchase.jumlah_pembelian_produk }}
+                                    </td>
+                                    <td>{{ "Rp." + purchase.price }}</td>
+                                    <td>
+                                        {{
+                                            "Rp." +
+                                            purchase.price *
+                                                purchase.jumlah_pembelian_produk
+                                        }}
+                                    </td>
+                                    <td>
+                                        {{ formatDate(purchase.created_at) }}
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-12 col-md-5">
-                            <div
-                                class="dataTables_info"
-                                id="example2_info"
-                                role="status"
-                                aria-live="polite"
-                            >
-                                Showing 1 to 10 of
-                                {{ laporanPemesanan.length }} entries
-                            </div>
+                        <br />
+                        <div class="row">
+                            <ul class="pagination float-right">
+                                <li
+                                    class="page-item"
+                                    :class="{ disabled: currentPage === 1 }"
+                                >
+                                    <button class="page-link" @click="prevPage">
+                                        &laquo;
+                                    </button>
+                                </li>
+                                <li
+                                    class="page-item"
+                                    v-for="page in pagesToShow"
+                                    :key="page"
+                                    :class="{
+                                        active: page === currentPage,
+                                    }"
+                                >
+                                    <button
+                                        class="page-link"
+                                        @click="currentPage = page"
+                                    >
+                                        {{ page }}
+                                    </button>
+                                </li>
+                                <li
+                                    class="page-item"
+                                    :class="{
+                                        disabled: currentPage === totalPages,
+                                    }"
+                                >
+                                    <button class="page-link" @click="nextPage">
+                                        &raquo;
+                                    </button>
+                                </li>
+                                <li
+                                    class="page-item"
+                                    :class="{
+                                        disabled: currentPage === totalPages,
+                                    }"
+                                ></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -104,80 +146,122 @@ export default {
     },
     data() {
         return {
-            laporanPemesananAwal: [],
-            laporanPemesanan: [],
+            product_purchases: [],
             datefilter: "",
             endDateFilter: "",
+            datePickerConfig: {
+                dateFormat: "d-m-Y",
+            },
+            currentPage: 1,
+            perPage: 10,
         };
     },
+
     methods: {
         search() {
-            if (this.datefilter && !this.endDateFilter) {
-            alert("Mohon untuk mengisi End Date");
-            return; 
-        }
-            
-            const startDate = moment(this.datefilter, "DD-MM-YYYY").toDate();
-            const endDate = moment(this.endDateFilter, "DD-MM-YYYY").toDate();
+            if (!this.datefilter || !this.endDateFilter) {
+                alert("Mohon untuk mengisi kedua tanggal.");
+                return;
+            }
 
+            const startDate = moment(this.datefilter).format("YYYY-MM-DD");
+            const endDate = moment(this.endDateFilter).format("YYYY-MM-DD");
+
+            if (endDate < startDate) {
+                alert("Tanggal akhir harus setelah tanggal awal.");
+                return;
+            }
+            this.product_purchases = this.product_purchases.filter(
+                (purchase) => {
+                    const purchaseDate = moment(purchase.created_at).format(
+                        "YYYY-MM-DD"
+                    );
+                    return purchaseDate >= startDate && purchaseDate <= endDate;
+                }
+            );
+        },
+
+        formatDate(date) {
+            return moment(date).format("DD-MM-YYYY");
+        },
+
+        fetchData() {
             axios
-
-            .get(`http://127.0.0.1:8001/api/pembelian?start_date=${startDate}&end_date=${endDate}`)
+                .get("http://127.0.0.1:8001/api/pembelian")
                 .then((response) => {
-                    this.laporanPemesanan = response.data;
-                    if (this.laporanPemesanan.length === 0) {
-                        alert("Tidak ada data laporan pemesanan barang yang sesuai dengan rentang tanggal yang dipilih.");
-                    }
+                    this.product_purchases = response.data.product_purchases;
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);
                 });
-
-            const filteredLaporanPemesanan = this.laporanPemesananAwal.filter(
-                (item) => {
-                    const tanggalPemesanan = moment(
-                        item.tanggalPemesanan,
-                        "DD/MM/YYYY"
-                    ).toDate();
-                    return (
-                        tanggalPemesanan >= startDate &&
-                        tanggalPemesanan <= endDate
-                    );
-                }
-            );
-
-            if (filteredLaporanPemesanan.length === 0) {
-            alert("Tidak ada data laporan pemesanan barang yang sesuai dengan rentang tanggal yang dipilih.");
-            return;
-        }
-
-            this.laporanPemesanan = filteredLaporanPemesanan;
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
         },
     },
     mounted() {
-        axios
-        .get("http://127.0.0.1:8001/api/pembelian")
-            .then((response) => {
-                this.laporanPemesananAwal = response.data;
-                this.laporanPemesanan = response.data;
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-
-        this.laporanPemesanan = this.laporanPemesananAwal;
+        this.fetchData();
 
         $(function () {
             $("#example2").DataTable({
-                paging: true,
+                paging: false,
                 lengthChange: false,
                 searching: false,
                 ordering: true,
-                info: true,
+                info: false,
                 autoWidth: false,
                 responsive: true,
             });
         });
+    },
+
+    computed: {
+        startIndex() {
+            return this.currentPage > 1
+                ? (this.currentPage - 1) * this.perPage + 1
+                : 1;
+        },
+        endIndex() {
+            return Math.min(
+                this.startIndex + this.perPage - 1,
+                this.product_purchases.length
+            );
+        },
+        paginatedData() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return this.product_purchases.slice(start, end);
+        },
+        totalPages() {
+            return Math.ceil(this.product_purchases.length / this.perPage);
+        },
+        pagesToShow() {
+            const maxVisiblePages = 5;
+            const pages = [];
+            let startPage = 1;
+            let endPage = Math.min(maxVisiblePages, this.totalPages);
+
+            if (this.currentPage > Math.floor(maxVisiblePages / 2)) {
+                startPage = this.currentPage - Math.floor(maxVisiblePages / 2);
+                endPage = this.currentPage + Math.floor(maxVisiblePages / 2);
+                if (endPage > this.totalPages) {
+                    endPage = this.totalPages;
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
     },
 };
 </script>
