@@ -16,10 +16,13 @@
                                     <th>No</th>
                                     <th>Nama Produk</th>
                                     <th>Stok</th>
-                                    <th>Kategori Produk</th>
-                                    <th>Spesifikasi Produk</th>
+                                    <th style="width: 10%">Kategori Produk</th>
+                                    <th style="width: 20%">
+                                        Spesifikasi Produk
+                                    </th>
                                     <th>Tanggal Masuk</th>
                                     <th>Tanggal Expired</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,6 +43,32 @@
                                     <td>{{ product.spesifikasi }}</td>
                                     <td>{{ product.tanggal_masuk }}</td>
                                     <td>{{ product.tanggal_expired }}</td>
+                                    <td>
+                                        <ul class="list-inline m-0">
+                                            <li class="list-inline-item">
+                                                <button
+                                                    class="btn btn-success btn-sm rounded-0"
+                                                    type="button"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="Edit"
+                                                >
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <button
+                                                    class="btn btn-danger btn-sm rounded-0"
+                                                    type="button"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="Delete"
+                                                >
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
