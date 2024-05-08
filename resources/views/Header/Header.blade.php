@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <link rel="stylesheet" href="Asset/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <link rel="stylesheet" href="Asset/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="icon" type="image/x-icon" href="/Asset/gambar/iconRKT.png">
   <link rel="stylesheet" href="Asset/plugins/jqvmap/jqvmap.min.css">
   <link rel="stylesheet" href="Asset/dist/css/adminlte.min.css">
   <link rel="stylesheet" href="Asset/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">

@@ -190,11 +190,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.card-body -->
             </div>
             <br />
         </div>
-        <!-- /.container-fluid -->
     </section>
 </template>
 

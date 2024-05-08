@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,7 @@ use App\Http\Controllers\StokController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('/Login',[LoginController::class, 'Login'])->name("Login");
 Route::get('/',[DashboardController::class, 'Dashboard'])->name("Dashboard");
 Route::get('/ProdukToko',[ProdukController::class, 'Produk'])->name("ProdukToko");
 Route::get('/PembelianProduk',[ProdukController::class, 'PembelianProduk'])->name("PembelianProduk");

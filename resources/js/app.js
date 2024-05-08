@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import Login from "./components/Login.vue";
 import Dashboard from "./components/Dashboard.vue";
 import ProdukToko from "./components/ProdukToko.vue";
 import PembelianProduk from "./components/PembelianProduk.vue";
@@ -12,10 +13,10 @@ import EditProduk from "./components/editproduk.vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
-// Membuat router
 const router = createRouter({
     history: createWebHistory(),
     routes: [
+        { path: "/Login", component: Login },
         { path: "/", component: Dashboard },
         { path: "/ProdukToko", component: ProdukToko },
         { path: "/PembelianProduk", component: PembelianProduk },

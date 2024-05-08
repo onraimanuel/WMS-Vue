@@ -264,7 +264,7 @@ export default {
             currentPage: 1,
             perPage: 10,
             maxPageLinks: 5,
-            entryOptions: [5, 10, 15, 20], // Option values for 'Show entries'
+            entryOptions: [5, 10, 15, 20],
         };
     },
     computed: {
@@ -290,12 +290,9 @@ export default {
             );
             let endPage = Math.min(pageCount, startPage + maxPageLinks - 1);
 
-            // Adjust startPage and endPage if there are not enough pages to display
             if (endPage - startPage + 1 < maxPageLinks) {
                 startPage = Math.max(1, endPage - maxPageLinks + 1);
             }
-
-            // Generate an array of page numbers to display
             return Array.from(
                 { length: endPage - startPage + 1 },
                 (_, i) => startPage + i
@@ -303,7 +300,7 @@ export default {
         },
     },
     mounted() {
-        this.filteredData = this.dataStok; // Initialize filteredData with the initial data
+        this.filteredData = this.dataStok;
     },
     methods: {
         handleSearchInput(searchValue) {
@@ -346,17 +343,14 @@ export default {
 </script>
 
 <style>
-/* Tambahkan gaya untuk menyesuaikan ukuran komponen */
 .col-sm-2 > * {
     margin-bottom: 7px;
-    /* Sesuaikan jarak antara komponen */
     position: relative;
     left: 110px;
 }
 
 .table table-bordered table-striped > * {
     margin-bottom: 8px;
-    /* Sesuaikan jarak antara komponen */
     width: relative;
 }
 </style>

@@ -5,7 +5,6 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-md-6">
-                            <!-- Dropdown dan input "Nama Toko" -->
                             <div class="form-group row">
                                 <label
                                     for="namaToko"
@@ -32,7 +31,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- Label dan input "Kategori Produk" -->
                             <div class="form-group row">
                                 <label
                                     for="kategoriProduk"
@@ -85,7 +83,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- Label dan input "Spesifikasi Produk" -->
                             <div class="form-group row">
                                 <label
                                     for="spesifikasiProduk"
@@ -121,7 +118,6 @@
                                     />
                                 </div>
                             </div>
-                            <!-- Label dan input "Jumlah" -->
                             <div class="form-group row">
                                 <label
                                     for="jumlah"
@@ -156,7 +152,6 @@
                                     />
                                 </div>
                             </div>
-                            <!-- Tombol "Tambah Produk" -->
                             <div class="form-group row">
                                 <div class="col-md-8 offset-md-4">
                                     <button
