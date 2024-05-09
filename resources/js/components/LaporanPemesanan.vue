@@ -6,7 +6,7 @@
                     <h3 class="card-title">Laporan Pemesanan Barang</h3>
                 </div>
                 <div class="card-body">
-                    <div class="container float-lefts">
+                    <div class="container float-left">
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Start Date : </label>
