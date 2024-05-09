@@ -68,6 +68,10 @@ export default {
     },
     methods: {
         login() {
+            if (!this.username || !this.password) {
+                alert("Mohon isi username dan password.");
+                return;
+            }
             axios
                 .post("/postLogin", {
                     username: this.username,
@@ -76,20 +80,17 @@ export default {
                 .then((response) => {
                     if (response.data.redirect) {
                         window.location.href = response.data.redirect;
-                        alert("Login Sukses");
                     } else {
-                        alert(response.data.message);
+                        alert("Anda tidak bisa masuk.");
                     }
                 })
                 .catch((error) => {
                     console.error(error);
-                    alert("Login gagal ya. Silakan coba lagi.");
+                    alert("Username dan Password salah.");
                 });
         },
     },
 };
 </script>
 
-<style scoped>
-/* Styles */
-</style>
+<style scoped></style>

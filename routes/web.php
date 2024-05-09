@@ -18,6 +18,7 @@ use App\Http\Controllers\LoginController;
 | which contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware(['web'])->group(function () {
     Route::get('/', [DashboardController::class, 'Dashboard'])->name("Dashboard");
     Route::get('/ProdukToko', [ProdukController::class, 'produk'])->name("produk.toko");
     Route::get('/PembelianProduk', [ProdukController::class, 'pembelianProduk'])->name("pembelian.produk");
@@ -26,6 +27,8 @@ use App\Http\Controllers\LoginController;
     Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
     Route::get('/stok', [StokController::class, 'index']);
     Route::post('/addstock', [StokController::class, 'addStock']);
-    
-    Route::get('/login', [LoginController::class, 'login'])->name("login");
-    Route::post('/postLogin', [AuthController::class, 'login']);
+});
+
+Route::get('/login', [LoginController::class, 'login'])->name("login");
+Route::post('/postLogin', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
