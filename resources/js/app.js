@@ -16,7 +16,7 @@ import "flatpickr/dist/flatpickr.css";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: "/Login", component: Login },
+        { path: "/login", component: Login },
         { path: "/", component: Dashboard },
         { path: "/ProdukToko", component: ProdukToko },
         { path: "/PembelianProduk", component: PembelianProduk },

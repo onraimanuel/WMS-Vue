@@ -16,7 +16,7 @@
                             type="text"
                             class="form-control"
                             placeholder="Username atau Email"
-                            v-model="email"
+                            v-model="username"
                         />
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -62,28 +62,34 @@ import axios from "axios";
 export default {
     data() {
         return {
-            email: "",
+            username: "",
             password: "",
-            rememberMe: false,
         };
     },
     methods: {
         login() {
-            // Kirim permintaan POST ke endpoint login
             axios
-                .post("http://127.0.0.1:8001/login", {
-                    email: this.email,
+                .post("/postLogin", {
+                    username: this.username,
                     password: this.password,
                 })
                 .then((response) => {
-                    alert("Login berhasil");
+                    if (response.data.redirect) {
+                        window.location.href = response.data.redirect;
+                        alert("Login Sukses");
+                    } else {
+                        alert(response.data.message);
+                    }
                 })
                 .catch((error) => {
-                    alert("Login gagal. Silakan coba lagi.");
+                    console.error(error);
+                    alert("Login gagal ya. Silakan coba lagi.");
                 });
         },
     },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Styles */
+</style>

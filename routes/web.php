@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 
 /*
@@ -12,22 +13,19 @@ use App\Http\Controllers\LoginController;
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| Here is where you can register web routes for your application.
+| These routes are loaded by the RouteServiceProvider within a group
+| which contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/Login',[LoginController::class, 'Login'])->name("Login");
-Route::get('/',[DashboardController::class, 'Dashboard'])->name("Dashboard");
-Route::get('/ProdukToko',[ProdukController::class, 'Produk'])->name("ProdukToko");
-Route::get('/PembelianProduk',[ProdukController::class, 'PembelianProduk'])->name("PembelianProduk");
-Route::get('/LaporanPemesanan',[LaporanController::class, 'LaporanPemesanan'])->name("LaporanPemesanan");
-Route::get('/LaporanStok',[LaporanController::class, 'LaporanStok'])->name("LaporanStok");
-Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
-
-
-Route::get('/stok', [StokController::class, 'index']);
-Route::post('/addstock', [StokController::class, 'addStock']);
-
-
-
+    Route::get('/', [DashboardController::class, 'Dashboard'])->name("Dashboard");
+    Route::get('/ProdukToko', [ProdukController::class, 'produk'])->name("produk.toko");
+    Route::get('/PembelianProduk', [ProdukController::class, 'pembelianProduk'])->name("pembelian.produk");
+    Route::get('/LaporanPemesanan', [LaporanController::class, 'laporanPemesanan'])->name("laporan.pemesanan");
+    Route::get('/LaporanStok', [LaporanController::class, 'laporanStok'])->name("laporan.stok");
+    Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
+    Route::get('/stok', [StokController::class, 'index']);
+    Route::post('/addstock', [StokController::class, 'addStock']);
+    
+    Route::get('/login', [LoginController::class, 'login'])->name("login");
+    Route::post('/postLogin', [AuthController::class, 'login']);
