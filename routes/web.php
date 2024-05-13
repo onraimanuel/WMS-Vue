@@ -25,8 +25,10 @@ Route::middleware(['web'])->group(function () {
     Route::get('/LaporanPemesanan', [LaporanController::class, 'laporanPemesanan'])->name("laporan.pemesanan");
     Route::get('/LaporanStok', [LaporanController::class, 'laporanStok'])->name("laporan.stok");
     Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
-    Route::get('/stok', [StokController::class, 'index']);
+    Route::get('/stocks', [StokController::class, 'index']);
     Route::post('/addstock', [StokController::class, 'addStock']);
+
+
 });
 
 Route::get('/login', [LoginController::class, 'login'])->name("login");

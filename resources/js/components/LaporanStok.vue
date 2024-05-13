@@ -128,6 +128,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import SearchInput from "@/components/SearchInput.vue";
 import PrintButton from "./PrintButton.vue";
 
@@ -138,127 +139,7 @@ export default {
     },
     data() {
         return {
-            dataStok: [
-                {
-                    namaToko: "Loesi komp",
-                    category: "makanan",
-                    namaProduk: "Tela-tela",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Pt. Tbk",
-                    category: "makanan",
-                    namaProduk: "Sasagun",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Koperasi IT Del",
-                    category: "makanan",
-                    namaProduk: "Piza",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Loesi komp",
-                    category: "makanan",
-                    namaProduk: "Tela-tela",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Pt. Tbk",
-                    category: "makanan",
-                    namaProduk: "Sasagun",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Koperasi IT Del",
-                    category: "makanan",
-                    namaProduk: "Piza",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Loesi komp",
-                    category: "makanan",
-                    namaProduk: "Tela-tela",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Pt. Tbk",
-                    category: "makanan",
-                    namaProduk: "Sasagun",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Loesi komp",
-                    category: "makanan",
-                    namaProduk: "Tela-tela",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Pt. Tbk",
-                    category: "makanan",
-                    namaProduk: "Sasagun",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Koperasi IT Del",
-                    category: "makanan",
-                    namaProduk: "Piza",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Loesi komp",
-                    category: "makanan",
-                    namaProduk: "Tela-tela",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Pt. Tbk",
-                    category: "makanan",
-                    namaProduk: "Sasagun",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Koperasi IT Del",
-                    category: "makanan",
-                    namaProduk: "Piza",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Loesi komp",
-                    category: "makanan",
-                    namaProduk: "Tela-tela",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Pt. Tbk",
-                    category: "makanan",
-                    namaProduk: "Sasagun",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-                {
-                    namaToko: "Koperasi IT Del",
-                    category: "makanan",
-                    namaProduk: "Piza",
-                    stokMasuk: 10,
-                    stokKeluar: 1,
-                },
-            ],
+            dataStok: [], 
             filteredData: [],
             searchText: "",
             currentPage: 1,
@@ -267,6 +148,7 @@ export default {
             entryOptions: [5, 10, 15, 20],
         };
     },
+
     computed: {
         totalPages() {
             return Math.ceil(this.filteredData.length / this.perPage);
@@ -300,9 +182,20 @@ export default {
         },
     },
     mounted() {
-        this.filteredData = this.dataStok;
+        this.fetchData();
     },
     methods: {
+        fetchData(){
+            axios
+                .get("/stocks") 
+                .then((response) => {
+                    this.dataStok = response.data;
+                    this.filteredData = this.dataStok;
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
+        },
         handleSearchInput(searchValue) {
             this.filteredData = this.dataStok.filter(
                 (item) =>
