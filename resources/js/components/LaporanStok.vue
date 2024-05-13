@@ -59,9 +59,9 @@
                                 :key="index"
                             >
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ item.namaToko }}</td>
-                                <td>{{ item.category }}</td>
-                                <td>{{ item.namaProduk }}</td>
+                                <td>{{ item.merchant_name }}</td>
+                                <td>{{ item.kategori }}</td>
+                                <td>{{ item.product_name }}</td>
                                 <td class="text-center">
                                     {{ item.stokMasuk }}
                                 </td>
@@ -139,7 +139,7 @@ export default {
     },
     data() {
         return {
-            dataStok: [], 
+            dataStok: [],
             filteredData: [],
             searchText: "",
             currentPage: 1,
@@ -185,9 +185,9 @@ export default {
         this.fetchData();
     },
     methods: {
-        fetchData(){
+        fetchData() {
             axios
-                .get("/stocks") 
+                .get("/stok")
                 .then((response) => {
                     this.dataStok = response.data;
                     this.filteredData = this.dataStok;

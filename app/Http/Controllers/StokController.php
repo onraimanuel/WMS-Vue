@@ -16,7 +16,7 @@ class StokController extends Controller
             $data = $stocks->map(function ($stock) {
                 return [
                     'product_name' => $stock->product->product_name,
-                    'merchant_name' => $stock->merchant->nama_merchant, // Ubah merchant_id menjadi nama_merchant
+                    'merchant_name' => $stock->merchant->nama_merchant, 
                     'stok' => $stock->jumlah_stok,
                     'kategori' => $stock->product->category ? $stock->product->category->nama_kategori : null,
                     'spesifikasi' => $stock->product->product_description,
@@ -54,7 +54,12 @@ class StokController extends Controller
         }
     }
 
+
 }
+
+
+
+
 
 
 
