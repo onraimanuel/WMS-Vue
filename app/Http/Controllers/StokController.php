@@ -20,6 +20,8 @@ class StokController extends Controller
                     'stok' => $stock->jumlah_stok,
                     'kategori' => $stock->product->category ? $stock->product->category->nama_kategori : null,
                     'spesifikasi' => $stock->product->product_description,
+                    'hargamodal' =>$stock->hargamodal,
+                    'hargajual' =>$stock->hargajual,
                     'tanggal_masuk' => $stock->tanggal_masuk,
                     'tanggal_expired' => $stock->tanggal_expired,
                 ];
@@ -36,6 +38,8 @@ class StokController extends Controller
             $request->validate([
                 'product_id' => 'required|exists:products,product_id',
                 'jumlah' => 'required|numeric|min:1',
+                'hargamodal' => 'required|numeric|min:1',
+                'hargajual' => 'required|numeric|min:1',
                 'tanggal_expired' => 'required|date',
             ]);
     
@@ -43,6 +47,8 @@ class StokController extends Controller
             $stock->product_id = $request->product_id;
             $stock->merchant_id = $request->merchant_id;
             $stock->jumlah_stok = $request->jumlah;
+            $stock->hargamodal = $request->hargamodal;
+            $stock->hargajual = $request->hargajual;
             $stock->tanggal_masuk = now();
             $stock->tanggal_expired = $request->tanggal_expired;
             $stock->lokasi = $request->lokasi;
