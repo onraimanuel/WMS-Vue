@@ -2,41 +2,13 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
+                <!-- Bagian header card -->
                 <div class="card-header">
-                    <h3 class="card-title">Laporan Stok Barang</h3>
+                    <h3 class="card-title">Transaksi pada Warehouse</h3>
                 </div>
+                <!-- Bagian body card -->
                 <div class="card-body table-responsive">
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <div class="dataTables_length" id="example1_length">
-                                <label
-                                    >Show
-                                    <select
-                                        v-model="perPage"
-                                        class="custom-select custom-select-sm form-control form-control-sm"
-                                    >
-                                        <option
-                                            v-for="option in entryOptions"
-                                            :key="option"
-                                            :value="option"
-                                        >
-                                            {{ option }}
-                                        </option>
-                                    </select>
-                                    entries
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <PrintButton class="btn btn-primary btn-block" />
-                            <SearchInput
-                                v-model="searchText"
-                                @search-input="handleSearchInput"
-                                placeholder="Search"
-                                class="form-control"
-                            />
-                        </div>
-                    </div>
+                    <!-- Tabel transaksi -->
                     <table
                         id="example1"
                         class="table table-bordered table-striped"
@@ -45,30 +17,26 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 25%">Nama Toko</th>
-                                <th style="width: 20%">Category</th>
-                                <th style="width: 20%">Nama Produk</th>
-                                <th style="width: 10%">Stok Masuk</th>
-                                <th style="width: 10%">Stok Keluar</th>
-                                <th style="width: 10%">Sisa Stok</th>
+                                <th style="width: 25%">Nama Produk</th>
+                                <th style="width: 20%">Nama Toko</th>
+                                <th style="width: 20%">Jumlah Barang Keluar</th>
+                                <th style="width: 20%">Tanggal Transaksi</th>
+                                <th style="width: 10%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(item, index) in displayedProducts"
-                                :key="index"
+                                v-for="(transaction, index) in paginatedData"
+                                :key="transaction.transaksi_id"
                             >
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ item.merchant_name }}</td>
-                                <td>{{ item.kategori }}</td>
-                                <td>{{ item.product_name }}</td>
-                                <td class="text-center">
-                                    {{ item.stok }}
+                                <td>
+                                    {{ transaction.product_name }}
                                 </td>
-                                <td class="text-center">
-                                    {{ item.stokKeluar }}
-                                </td>
-                                <td class="text-center">{{ item.sisaStok }}</td>
+                                <td>{{ transaction.nama_merchant }}</td>
+                                <td>{{ transaction.jumlah_barang_keluar }}</td>
+                                <td>{{ transaction.tanggal_keluar }}</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
@@ -120,6 +88,17 @@
                                 </ul>
                             </nav>
                         </div>
+                        <div class="col-md-6">
+                            <div class="float-right">
+                                <button
+                                    type="button"
+                                    class="btn btn-block bg-gradient-primary btn-sm"
+                                    @click="redirectToTambahTransaksi"
+                                >
+                                    Tambah Transaksi
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,6 +120,7 @@ export default {
         return {
             dataStok: [],
             filteredData: [],
+            paginatedData: [], // Data transaksi untuk halaman saat ini
             searchText: "",
             currentPage: 1,
             perPage: 10,
@@ -153,14 +133,7 @@ export default {
         totalPages() {
             return Math.ceil(this.filteredData.length / this.perPage);
         },
-        displayedProducts() {
-            const start = (this.currentPage - 1) * this.perPage;
-            const end = start + this.perPage;
-            return this.filteredData.slice(start, end).map((item) => ({
-                ...item,
-                sisaStok: item.stokMasuk - item.stokKeluar,
-            }));
-        },
+
         pagesToShow() {
             const pageCount = this.totalPages;
             const currentPage = this.currentPage;
@@ -187,36 +160,19 @@ export default {
     methods: {
         fetchData() {
             axios
-                .get("/stok")
+                .get("/dataTransaksi")
                 .then((response) => {
                     this.dataStok = response.data;
                     this.filteredData = this.dataStok;
+                    this.paginateData(); // Panggil metode untuk membagi data transaksi ke dalam halaman-halaman
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);
                 });
         },
-        handleSearchInput(searchValue) {
-            this.filteredData = this.dataStok.filter(
-                (item) =>
-                    item.namaToko
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.category
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.namaProduk
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.stokMasuk
-                        .toString()
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.stokKeluar
-                        .toString()
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase())
-            );
+
+        redirectToTambahTransaksi() {
+            window.location.href = "/TambahTransaksi";
         },
         prevPage() {
             if (this.currentPage > 1) {
@@ -230,6 +186,11 @@ export default {
         },
         gotoPage(page) {
             this.currentPage = page;
+        },
+        paginateData() {
+            const startIndex = (this.currentPage - 1) * this.perPage;
+            const endIndex = startIndex + this.perPage;
+            this.paginatedData = this.filteredData.slice(startIndex, endIndex);
         },
     },
 };

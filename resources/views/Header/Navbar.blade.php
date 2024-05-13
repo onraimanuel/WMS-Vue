@@ -32,6 +32,12 @@
                         <p>Pembelian Produk</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{url('/TransaksiWarehouse')}}" class="nav-link">
+                        <i class="nav-icon fas fa-store"></i>
+                        <p>Transaksi Warehouse</p>
+                    </a>
+                </li>
                 <li class="nav-header">LAPORAN</li>
                 <li class="nav-item">
                     <a href="{{url('/LaporanPemesanan')}}" class="nav-link">

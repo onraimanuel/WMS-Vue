@@ -16,4 +16,6 @@ class ProdukController extends Controller
     public function Create(){
         return view('TambahProduk');
     }
+
+
 }

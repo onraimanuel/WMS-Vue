@@ -7,6 +7,8 @@ import PembelianProduk from "./components/PembelianProduk.vue";
 import LaporanPemesanan from "./components/LaporanPemesanan.vue";
 import LaporanStok from "./components/LaporanStok.vue";
 import TambahProduk from "./components/TambahProduk.vue";
+import TransaksiWarehouse from "./components/TransaksiWarehouse.vue";
+import TambahTransaksi from "./components/TambahTransaksi.vue";
 
 import EditProduk from "./components/editproduk.vue";
 
@@ -24,6 +26,8 @@ const router = createRouter({
         { path: "/LaporanStok", component: LaporanStok },
         { path: "/TambahProduk", component: TambahProduk },
         { path: "/EditProduk/:id", component: EditProduk },
+        { path: "/TransaksiWarehouse", component: TransaksiWarehouse },
+        { path: "/TambahTransaksi", component: TambahTransaksi },
     ],
 });
 

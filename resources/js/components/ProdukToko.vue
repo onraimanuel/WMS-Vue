@@ -20,6 +20,8 @@
                                     <th style="width: 20%">
                                         Spesifikasi Produk
                                     </th>
+                                    <th>Harga Modal</th>
+                                    <th>Harga Jual</th>
                                     <th>Tanggal Masuk</th>
                                     <th>Tanggal Expired</th>
                                     <th>Action</th>
@@ -41,6 +43,8 @@
                                     <td>{{ product.stok }}</td>
                                     <td>{{ product.kategori }}</td>
                                     <td>{{ product.spesifikasi }}</td>
+                                    <td>{{ product.hargamodal }}</td>
+                                    <td>{{ product.hargajual }}</td>
                                     <td>{{ product.tanggal_masuk }}</td>
                                     <td>{{ product.tanggal_expired }}</td>
                                     <td>
@@ -196,7 +200,7 @@ export default {
     methods: {
         async fetchProducts() {
             try {
-                const response = await axios.get("/stok");
+                const response = await axios.get("/stock");
                 console.log(response.data);
                 this.products = response.data;
             } catch (error) {

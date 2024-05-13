@@ -124,6 +124,7 @@
                                     class="col-md-4 col-form-label text-md-right"
                                     >Jumlah</label
                                 >
+
                                 <div class="col-md-8">
                                     <input
                                         type="number"
@@ -131,6 +132,42 @@
                                         id="jumlah"
                                         name="jumlah"
                                         v-model="jumlah"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label
+                                    for="hargamodal"
+                                    class="col-md-4 col-form-label text-md-right"
+                                    >Harga Modal</label
+                                >
+
+                                <div class="col-md-8">
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="hargamodal"
+                                        name="hargamodal"
+                                        v-model="hargamodal"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label
+                                    for="hargajual"
+                                    class="col-md-4 col-form-label text-md-right"
+                                    >Harga Jual</label
+                                >
+
+                                <div class="col-md-8">
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="hargajual"
+                                        name="hargajual"
+                                        v-model="hargajual"
                                         required
                                     />
                                 </div>
@@ -181,6 +218,8 @@ export default {
             spesifikasiProduk: "",
             lokasi: "",
             jumlah: 0,
+            hargamodal: 0,
+            hargajual: 0,
             tanggalExpired: "",
             merchants: [],
             categories: [],
@@ -253,6 +292,8 @@ export default {
                     product_id: this.selectedProduct,
                     merchant_id: this.selectedMerchant,
                     jumlah: this.jumlah,
+                    hargamodal: this.hargamodal,
+                    hargajual: this.hargajual,
                     tanggal_expired: this.tanggalExpired,
                     lokasi: this.lokasi,
                 });
@@ -265,16 +306,6 @@ export default {
                 console.error("Error adding product:", error);
                 alert("Gagal menambahkan produk");
             }
-        },
-
-        clearInputs() {
-            this.selectedMerchant = null;
-            this.selectedCategory = null;
-            this.selectedProduct = null;
-            this.spesifikasiProduk = "";
-            this.lokasi = "";
-            this.jumlah = 0;
-            this.tanggalExpired = "";
         },
     },
 };
