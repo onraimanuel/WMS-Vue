@@ -15,8 +15,9 @@ class StokController extends Controller
             $stocks = Stock::with(['product.category', 'merchant'])->get();
             $data = $stocks->map(function ($stock) {
                 return [
+                    'stock_id' => $stock->stock_id,
                     'product_name' => $stock->product->product_name,
-                    'merchant_name' => $stock->merchant->nama_merchant, // Ubah merchant_id menjadi nama_merchant
+                    'merchant_name' => $stock->merchant->nama_merchant, 
                     'stok' => $stock->jumlah_stok,
                     'kategori' => $stock->product->category ? $stock->product->category->nama_kategori : null,
                     'spesifikasi' => $stock->product->product_description,

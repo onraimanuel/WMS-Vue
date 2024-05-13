@@ -7,6 +7,8 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TransaksiWarehouseController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,13 @@ Route::middleware(['web'])->group(function () {
     Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
     Route::get('/stok', [StokController::class, 'index']);
     Route::post('/addstock', [StokController::class, 'addStock']);
+    Route::get('/TransaksiWarehouse', [TransaksiWarehouseController::class, 'index'])->name("TransaksiWarehouse");
+    Route::get('/dataTransaksi', [TransaksiWarehouseController::class, 'dataTransaksi'])->name("dataTransaksi");
+    Route::get('/TambahTransaksi', [TransaksiWarehouseController::class, 'TambahTransaksi'])->name("TambahTransaksi");
+    Route::post('/AddTransaksi', [TransaksiWarehouseController::class, 'AddTransaksi'])->name("AddTransaksi");
+
+    
+    
 });
 
 Route::get('/login', [LoginController::class, 'login'])->name("login");
