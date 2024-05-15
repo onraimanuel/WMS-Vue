@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Stock;
 use App\Models\Merchants;
 use App\Models\Transaksi;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
@@ -38,18 +39,38 @@ class TransaksiWarehouseController extends Controller
 
     public function AddTransaksi(Request $request){
         try {
+            DB::beginTransaction();
+    
+            $stock = Stock::where('stock_id', $request->stock_id)->first();
+            
+            if (!$stock) {
+                return response()->json(['error' => 'Stok tidak ditemukan'], 404);
+            }
+    
+            if ($stock->sisa_stok < $request->jumlah_barang_keluar) {
+                return response()->json(['error' => 'Jumlah stok tidak mencukupi'], 400);
+            }
+    
+            $stock->sisa_stok -= $request->jumlah_barang_keluar;
+            $stock->save();
+    
             $transaksi = new Transaksi();
             $transaksi->transaksi_id = $request->transaksi_id;
             $transaksi->stock_id = $request->stock_id;
             $transaksi->jumlah_barang_keluar = $request->jumlah_barang_keluar;
-            $transaksi->tanggal_keluar = now();
+            $transaksi->tanggal_keluar = $request->tanggal_keluar;
             $transaksi->save();
+    
+            DB::commit();
     
             return response()->json(['message' => 'Data berhasil ditambahkan'], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
+    
 
 
     

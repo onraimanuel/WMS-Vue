@@ -1,11 +1,11 @@
 <aside class="main-sidebar sidebar-dark-primary d-flex flex-column">
     <a href="{{url('/')}}" class="brand-link">
-        <span class="brand-text font-weight-light">WMS - RKT</span>
+        <span class="brand-text font-weight-light h-100 ">Warehouse <br> Rumah Kreatif Toba</span>
     </a>
     <div class="sidebar d-flex flex-column h-100">
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
-                <a href="{{url('/')}}" class="d-block">Onra Imanuel</a>
+                <a href="{{url('/')}}" class="d-block">Admin Warehouse</a>
             </div>
         </div>
         <nav class="mt-2 flex-grow-1">

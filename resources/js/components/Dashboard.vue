@@ -119,11 +119,13 @@
                                 </td>
                                 <td>{{ product.product_name }}</td>
                                 <td>{{ product.merchant_name }}</td>
-                                <td>{{ product.stok }}</td>
+                                <td>{{ product.sisa_stok }}</td>
                                 <td>{{ product.kategori }}</td>
                                 <td>{{ product.spesifikasi }}</td>
-                                <td>{{ product.tanggal_masuk }}</td>
-                                <td>{{ product.tanggal_expired }}</td>
+                                <td>{{ formatDate(product.tanggal_masuk) }}</td>
+                                <td>
+                                    {{ formatDate(product.tanggal_expired) }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -273,6 +275,9 @@ export default {
         },
         redirectToTambahProduk() {
             window.location.href = "/TambahProduk";
+        },
+        formatDate(date) {
+            return moment(date).format("DD-MM-YYYY");
         },
     },
     mounted() {

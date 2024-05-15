@@ -48,7 +48,23 @@
                                     />
                                 </div>
                             </div>
-                            <!-- Tombol untuk menambah transaksi -->
+                            <div class="form-group row">
+                                <label
+                                    for="tanggalTransaksi"
+                                    class="col-md-4 col-form-label text-md-right"
+                                >
+                                    Tanggal Keluar
+                                </label>
+                                <div class="col-md-8">
+                                    <input
+                                        type="date"
+                                        v-model="tanggalTransaksi"
+                                        class="form-control"
+                                        id="tanggalTransaksi"
+                                        name="tanggalTransaksi"
+                                    />
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <div class="col-md-8 offset-md-4">
                                     <button
@@ -73,6 +89,7 @@ export default {
     data() {
         return {
             selectedProduct: null,
+            tanggalTransaksi: null,
             products: [],
             jumlahBarangKeluar: 0,
         };
@@ -111,6 +128,7 @@ export default {
                 const response = await axios.post("/AddTransaksi", {
                     stock_id: this.selectedProduct,
                     jumlah_barang_keluar: this.jumlahBarangKeluar,
+                    tanggal_keluar: this.tanggal_keluar,
                 });
                 if (response.status === 200) {
                     alert("Transaksi berhasil ditambahkan");

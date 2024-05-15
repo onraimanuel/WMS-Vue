@@ -6,9 +6,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Transaksi pada Warehouse</h3>
                 </div>
-                <!-- Bagian body card -->
                 <div class="card-body table-responsive">
-                    <!-- Tabel transaksi -->
                     <table
                         id="example1"
                         class="table table-bordered table-striped"
@@ -16,12 +14,14 @@
                     >
                         <thead>
                             <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 25%">Nama Produk</th>
-                                <th style="width: 20%">Nama Toko</th>
-                                <th style="width: 20%">Jumlah Barang Keluar</th>
-                                <th style="width: 20%">Tanggal Transaksi</th>
-                                <th style="width: 10%">Action</th>
+                                <th>No</th>
+                                <th class="text-center">Nama Produk</th>
+                                <th class="text-center">Nama Toko</th>
+                                <th class="text-center">
+                                    Jumlah Barang Keluar
+                                </th>
+                                <th class="text-center">Tanggal Transaksi</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,10 +33,41 @@
                                 <td>
                                     {{ transaction.product_name }}
                                 </td>
-                                <td>{{ transaction.nama_merchant }}</td>
-                                <td>{{ transaction.jumlah_barang_keluar }}</td>
-                                <td>{{ transaction.tanggal_keluar }}</td>
-                                <td></td>
+                                <td>
+                                    {{ transaction.nama_merchant }}
+                                </td>
+                                <td class="text-center">
+                                    {{ transaction.jumlah_barang_keluar }}
+                                </td>
+                                <td class="text-center">
+                                    {{ formatDate(transaction.tanggal_keluar) }}
+                                </td>
+                                <td class="text-center">
+                                    <ul class="list-inline m-0">
+                                        <li class="list-inline-item">
+                                            <button
+                                                class="btn btn-success btn-sm rounded-0"
+                                                type="button"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Edit"
+                                            >
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <button
+                                                class="btn btn-danger btn-sm rounded-0"
+                                                type="button"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Delete"
+                                            >
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -191,6 +222,9 @@ export default {
             const startIndex = (this.currentPage - 1) * this.perPage;
             const endIndex = startIndex + this.perPage;
             this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+        },
+        formatDate(date) {
+            return moment(date).format("DD-MM-YYYY");
         },
     },
 };

@@ -32,22 +32,40 @@
                                     v-for="(product, index) in products"
                                     :key="index"
                                 >
-                                    <td>
+                                    <td class="text-center">
                                         {{
                                             index +
                                             1 +
                                             (currentPage - 1) * perPage
                                         }}
                                     </td>
-                                    <td>{{ product.product_name }}</td>
-                                    <td>{{ product.stok }}</td>
-                                    <td>{{ product.kategori }}</td>
-                                    <td>{{ product.spesifikasi }}</td>
-                                    <td>{{ product.hargamodal }}</td>
-                                    <td>{{ product.hargajual }}</td>
-                                    <td>{{ product.tanggal_masuk }}</td>
-                                    <td>{{ product.tanggal_expired }}</td>
                                     <td>
+                                        {{ product.product_name }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ product.sisa_stok }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ product.kategori }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ product.spesifikasi }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ formatToRupiah(product.hargamodal) }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ formatToRupiah(product.hargajual) }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ formatDate(product.tanggal_masuk) }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{
+                                            formatDate(product.tanggal_expired)
+                                        }}
+                                    </td>
+                                    <td class="text-center">
                                         <ul class="list-inline m-0">
                                             <li class="list-inline-item">
                                                 <button
@@ -200,7 +218,7 @@ export default {
     methods: {
         async fetchProducts() {
             try {
-                const response = await axios.get("/stock");
+                const response = await axios.get("/stok");
                 console.log(response.data);
                 this.products = response.data;
             } catch (error) {
@@ -225,6 +243,16 @@ export default {
         },
         redirectToTambahProduk() {
             window.location.href = "/TambahProduk";
+        },
+        formatDate(date) {
+            return moment(date).format("DD-MM-YYYY");
+        },
+        formatToRupiah(amount) {
+            return amount.toLocaleString("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+            });
         },
     },
     mounted() {

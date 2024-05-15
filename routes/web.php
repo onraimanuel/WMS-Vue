@@ -28,6 +28,7 @@ Route::middleware(['web'])->group(function () {
     Route::get('/LaporanStok', [LaporanController::class, 'laporanStok'])->name("laporan.stok");
     Route::get('/TambahProduk', [ProdukController::class, 'create'])->name('tambah.produk');
     Route::get('/stok', [StokController::class, 'index']);
+    Route::get('/LaporandataStok', [StokController::class, 'LaporanStok']);
     Route::post('/addstock', [StokController::class, 'addStock']);
 
 
@@ -36,6 +37,8 @@ Route::middleware(['web'])->group(function () {
     Route::get('/TambahTransaksi', [TransaksiWarehouseController::class, 'TambahTransaksi'])->name("TambahTransaksi");
     Route::post('/AddTransaksi', [TransaksiWarehouseController::class, 'AddTransaksi'])->name("AddTransaksi");
 
+
+    
     
     
 });

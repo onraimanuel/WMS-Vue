@@ -44,13 +44,17 @@
                     >
                         <thead>
                             <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 25%">Nama Toko</th>
-                                <th style="width: 20%">Category</th>
-                                <th style="width: 20%">Nama Produk</th>
-                                <th style="width: 10%">Stok Masuk</th>
-                                <th style="width: 10%">Stok Keluar</th>
-                                <th style="width: 10%">Sisa Stok</th>
+                                <th>No</th>
+                                <th>Nama Toko</th>
+                                <th>Category</th>
+                                <th>Nama Produk</th>
+                                <th>Stok Masuk</th>
+                                <th>Stok Keluar</th>
+                                <th>Sisa Stok</th>
+                                <th>Harga Modal</th>
+                                <th>Harga Jual</th>
+                                <th>Total Keuntungan</th>
+                                <th>Transaksi Terakhir</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,9 +70,29 @@
                                     {{ item.stok }}
                                 </td>
                                 <td class="text-center">
-                                    {{ item.stokKeluar }}
+                                    {{ item.total_barang_keluar }}
                                 </td>
-                                <td class="text-center">{{ item.sisaStok }}</td>
+                                <td class="text-center">
+                                    {{ item.stok_tersisa }}
+                                </td>
+                                <td class="text-center">
+                                    {{ formatToRupiah(item.hargamodal) }}
+                                </td>
+                                <td class="text-center">
+                                    {{ formatToRupiah(item.hargajual) }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{
+                                        formatToRupiah(
+                                            (item.hargajual - item.hargamodal) *
+                                                item.total_barang_keluar
+                                        )
+                                    }}
+                                </td>
+                                <td class="text-center">
+                                    {{ formatDate(item.transaksi_terakhir) }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -187,7 +211,7 @@ export default {
     methods: {
         fetchData() {
             axios
-                .get("/stok")
+                .get("/LaporandataStok")
                 .then((response) => {
                     this.dataStok = response.data;
                     this.filteredData = this.dataStok;
@@ -230,6 +254,16 @@ export default {
         },
         gotoPage(page) {
             this.currentPage = page;
+        },
+        formatDate(date) {
+            return moment(date).format("DD-MM-YYYY");
+        },
+        formatToRupiah(amount) {
+            return amount.toLocaleString("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+            });
         },
     },
 };

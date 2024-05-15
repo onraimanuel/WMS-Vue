@@ -13,7 +13,7 @@ class Stock extends Model
      * @var string
      */
     protected $table = 'stocks';
-
+    protected $primaryKey = 'stock_id';
     /**
      * The attributes that are mass assignable.
      *
@@ -45,4 +45,8 @@ class Stock extends Model
         return $this->belongsTo(Merchants::class, 'merchant_id', 'merchant_id');
     }
     
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'stock_id', 'stock_id');
+    }
 }

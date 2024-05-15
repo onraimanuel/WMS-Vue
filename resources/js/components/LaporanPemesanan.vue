@@ -70,12 +70,15 @@
                                     <td>
                                         {{ purchase.jumlah_pembelian_produk }}
                                     </td>
-                                    <td>{{ "Rp." + purchase.price }}</td>
+                                    <td>
+                                        {{ formatToRupiah(purchase.price) }}
+                                    </td>
                                     <td>
                                         {{
-                                            "Rp." +
-                                            purchase.price *
-                                                purchase.jumlah_pembelian_produk
+                                            formatToRupiah(
+                                                purchase.price *
+                                                    purchase.jumlah_pembelian_produk
+                                            )
                                         }}
                                     </td>
                                     <td>
@@ -204,6 +207,13 @@ export default {
             if (this.currentPage > 1) {
                 this.currentPage--;
             }
+        },
+        formatToRupiah(amount) {
+            return amount.toLocaleString("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+            });
         },
     },
     mounted() {
