@@ -17,21 +17,21 @@ class TransaksiWarehouseController extends Controller
     }
 
     public function dataTransaksi()
-{
-    $transaksis = Transaksi::select(
-        'transaksi.transaksi_id',
-        'products.product_name',
-        'merchants.nama_merchant',
-        'transaksi.jumlah_barang_keluar',
-        'transaksi.tanggal_keluar'
-    )
-    ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
-    ->join('products', 'stocks.product_id', '=', 'products.product_id')
-    ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
-    ->get();
+    {
+        $transaksis = Transaksi::select(
+            'transaksi.transaksi_id',
+            'products.product_name',
+            'merchants.nama_merchant',
+            'transaksi.jumlah_barang_keluar',
+            'transaksi.tanggal_keluar'
+        )
+        ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
+        ->join('products', 'stocks.product_id', '=', 'products.product_id')
+        ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
+        ->get();
 
-    return response()->json($transaksis);
-}
+        return response()->json($transaksis);
+    }
 
     public function TambahTransaksi(){
         return view('/TambahTransaksi');

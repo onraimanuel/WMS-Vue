@@ -73,10 +73,7 @@ class StokController extends Controller
 
             $data = $stocks->map(function ($stock) {
                 $totalBarangKeluar = $stock->transaksi->sum('jumlah_barang_keluar');
-
-                // Menghitung stok yang tersisa, pastikan tidak negatif
                 $stokTersisa = max($stock->jumlah_stok - $totalBarangKeluar, 0);
-
                 return [
                     'stock_id' => $stock->stock_id,
                     'product_name' => $stock->product->product_name,
@@ -88,7 +85,9 @@ class StokController extends Controller
                     'tanggal_expired' => $stock->tanggal_expired,
                     'transaksi_terakhir' => $stock->updated_at,
                     'total_barang_keluar' => $totalBarangKeluar,
-                    'stok_tersisa' => $stokTersisa, // Menambahkan stok tersisa ke data
+                    'tanggal_masuk' => $stock->tanggal_masuk,
+                    // 'lokasi' =>$stok->lokasi,
+                    'stok_tersisa' => $stokTersisa, 
                 ];
             });
 

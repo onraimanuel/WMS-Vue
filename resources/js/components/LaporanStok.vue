@@ -54,6 +54,7 @@
                                 <th>Harga Modal</th>
                                 <th>Harga Jual</th>
                                 <th>Total Keuntungan</th>
+                                <th>Tanggal Masuk</th>
                                 <th>Transaksi Terakhir</th>
                             </tr>
                         </thead>
@@ -89,6 +90,9 @@
                                                 item.total_barang_keluar
                                         )
                                     }}
+                                </td>
+                                <td>
+                                    {{ formatDate(item.tanggal_masuk) }}
                                 </td>
                                 <td class="text-center">
                                     {{ formatDate(item.transaksi_terakhir) }}
