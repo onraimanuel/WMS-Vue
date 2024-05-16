@@ -15,7 +15,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $response = Http::post('http://127.0.0.1:8001/api/postlogin', [
+        $response = Http::post('https://kreatif.tobakab.go.id/api/postlogin', [
             'username' => $request->username,
             'password' => $request->password,
         ]);

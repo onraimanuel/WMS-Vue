@@ -314,7 +314,7 @@ export default {
     },
     created() {
         axios
-            .get("http://127.0.0.1:8001/api/pembelian")
+            .get("https://kreatif.tobakab.go.id/api/pembelian")
             .then((response) => {
                 this.product_purchases = response.data.product_purchases;
                 this.filteredData = this.product_purchases.map((item) => ({
@@ -373,7 +373,7 @@ export default {
         showDetail(item) {
             axios
                 .get(
-                    `http://127.0.0.1:8001/api/pembelian?purchase_id=${item.purchase_id}`
+                    `https://kreatif.tobakab.go.id/api/pembelian?purchase_id=${item.purchase_id}`
                 )
                 .then((response) => {
                     const selectedPurchase = response.data.purchases.find(

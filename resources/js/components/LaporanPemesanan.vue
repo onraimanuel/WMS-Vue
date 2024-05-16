@@ -190,7 +190,7 @@ export default {
 
         fetchData() {
             axios
-                .get("http://127.0.0.1:8001/api/pembelian")
+                .get("https://kreatif.tobakab.go.id/api/pembelian")
                 .then((response) => {
                     this.product_purchases = response.data.product_purchases;
                 })
