@@ -98,6 +98,21 @@
                                     {{ formatDate(item.transaksi_terakhir) }}
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td colspan="10" class="text-right">
+                                    <strong
+                                        >Total Keuntungan Keseluruhan:</strong
+                                    >
+                                </td>
+                                <td colspan="2" class="text-center">
+                                    <strong>{{
+                                        formatToRupiah(
+                                            totalKeuntunganKeseluruhan
+                                        )
+                                    }}</strong>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <br />
@@ -157,6 +172,8 @@
 
 <script>
 import axios from "axios";
+import moment from "moment"; // tambahkan import moment
+
 import SearchInput from "@/components/SearchInput.vue";
 import PrintButton from "./PrintButton.vue";
 
@@ -174,6 +191,7 @@ export default {
             perPage: 10,
             maxPageLinks: 5,
             entryOptions: [5, 10, 15, 20],
+            totalKeuntunganKeseluruhan: 0, // tambahkan properti totalKeuntunganKeseluruhan
         };
     },
 
@@ -219,6 +237,7 @@ export default {
                 .then((response) => {
                     this.dataStok = response.data;
                     this.filteredData = this.dataStok;
+                    this.hitungTotalKeuntunganKeseluruhan(); // panggil fungsi hitungTotalKeuntunganKeseluruhan
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);
@@ -245,6 +264,7 @@ export default {
                         .toLowerCase()
                         .includes(searchValue.toLowerCase())
             );
+            this.hitungTotalKeuntunganKeseluruhan(); // panggil fungsi hitungTotalKeuntunganKeseluruhan
         },
         prevPage() {
             if (this.currentPage > 1) {
@@ -268,6 +288,18 @@ export default {
                 currency: "IDR",
                 minimumFractionDigits: 0,
             });
+        },
+        hitungTotalKeuntunganKeseluruhan() {
+            this.totalKeuntunganKeseluruhan = this.filteredData.reduce(
+                (total, item) => {
+                    return (
+                        total +
+                        (item.hargajual - item.hargamodal) *
+                            item.total_barang_keluar
+                    );
+                },
+                0
+            );
         },
     },
 };
