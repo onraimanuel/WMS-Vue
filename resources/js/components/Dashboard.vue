@@ -99,7 +99,7 @@
                                 <th>No</th>
                                 <th>Nama Produk</th>
                                 <th>Nama Tenant</th>
-                                <th>Stok</th>
+                                <th>Jumlah Barang Tersedia</th>
                                 <th>Kategori Produk</th>
                                 <th>Spesifikasi Produk</th>
                                 <th>Tanggal Masuk</th>

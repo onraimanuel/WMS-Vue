@@ -15,7 +15,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Produk</th>
-                                    <th>Stok</th>
+                                    <th>Jumlah Barang Tersedia</th>
                                     <th style="width: 10%">Kategori Produk</th>
                                     <th style="width: 20%">
                                         Spesifikasi Produk
