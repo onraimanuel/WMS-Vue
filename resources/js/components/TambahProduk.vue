@@ -237,7 +237,7 @@ export default {
         async fetchMerchants() {
             try {
                 const response = await fetch(
-                    "http://127.0.0.1:8001/api/daftartenant"
+                    "https://kreatif.tobakab.go.id/api/daftartenant"
                 );
 
                 if (!response.ok) {
@@ -255,7 +255,7 @@ export default {
         async fetchCategories() {
             try {
                 const response = await fetch(
-                    "http://127.0.0.1:8001/api/pilihkategori"
+                    "https://kreatif.tobakab.go.id/api/pilihkategori"
                 );
 
                 if (!response.ok) {
@@ -273,7 +273,7 @@ export default {
         async fetchProducts() {
             try {
                 const response = await fetch(
-                    "http://127.0.0.1:8001/api/listdaftarproduk"
+                    "https://kreatif.tobakab.go.id/api/listdaftarproduk"
                 );
 
                 if (!response.ok) {
