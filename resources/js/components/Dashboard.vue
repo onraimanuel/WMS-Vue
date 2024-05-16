@@ -5,7 +5,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>3</h3>
+                            <h3>{{ totalStockAvailable }}</h3>
                             <p>Barang Tersedia</p>
                         </div>
                         <div class="icon">
@@ -17,6 +17,7 @@
                         ></a>
                     </div>
                 </div>
+
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-success">
                         <div class="inner">
@@ -53,7 +54,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-danger">
                         <div class="inner">
-                            <h3>65</h3>
+                            <h3>{{ totalItemsSold }}</h3>
                             <p>Barang Keluar</p>
                         </div>
                         <div class="icon">
@@ -204,10 +205,13 @@ export default {
     data() {
         return {
             products: [],
+            transaksi: [],
             currentPage: 1,
             perPage: 10,
             maxPageLinks: 5,
             searchTerm: "",
+            totalStockAvailable: 0,
+            totalItemsSold: 0,
         };
     },
     computed: {
@@ -252,9 +256,37 @@ export default {
                 const response = await axios.get("/stok");
                 console.log(response.data);
                 this.products = response.data;
+
+                // Hitung jumlah total stok yang tersedia
+                this.totalStockAvailable = this.calculateTotalStockAvailable();
+
+                // Ambil data transaksi
+                await this.fetchTransactions();
+
+                // Hitung jumlah total barang yang sudah keluar
+                this.totalItemsSold = this.calculateTotalItemsSold();
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
+        },
+        async fetchTransactions() {
+            try {
+                const response = await axios.get("/LaporandataStok");
+                console.log(response.data);
+                this.transaksi = response.data;
+            } catch (error) {
+                console.error("Error fetching transactions:", error);
+            }
+        },
+        calculateTotalStockAvailable() {
+            return this.products.reduce((total, product) => {
+                return total + product.sisa_stok;
+            }, 0);
+        },
+        calculateTotalItemsSold() {
+            return this.transaksi.reduce((total, transaksi) => {
+                return total + transaksi.total_barang_keluar;
+            }, 0);
         },
         prevPage() {
             if (this.currentPage > 1) {
