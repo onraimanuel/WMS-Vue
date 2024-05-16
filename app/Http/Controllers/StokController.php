@@ -86,10 +86,11 @@ class StokController extends Controller
                     'transaksi_terakhir' => $stock->updated_at,
                     'total_barang_keluar' => $totalBarangKeluar,
                     'tanggal_masuk' => $stock->tanggal_masuk,
-                    // 'lokasi' =>$stok->lokasi,
                     'stok_tersisa' => $stokTersisa, 
                 ];
             });
+
+            $data = $data->sortByDesc('transaksi_terakhir')->values()->all();
 
             return response()->json($data);
         } catch (\Exception $e) {

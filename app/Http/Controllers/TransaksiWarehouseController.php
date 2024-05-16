@@ -28,10 +28,12 @@ class TransaksiWarehouseController extends Controller
         ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
         ->join('products', 'stocks.product_id', '=', 'products.product_id')
         ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
+        ->orderBy('transaksi.tanggal_keluar', 'desc') 
         ->get();
-
+    
         return response()->json($transaksis);
     }
+    
 
     public function TambahTransaksi(){
         return view('/TambahTransaksi');
