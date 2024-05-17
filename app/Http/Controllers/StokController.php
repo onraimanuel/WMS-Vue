@@ -24,13 +24,14 @@ class StokController extends Controller
                     'stok' => $stock->jumlah_stok,
                     'sisa_stok' => $stock->sisa_stok,
                     'kategori' => $stock->product->category ? $stock->product->category->nama_kategori : null,
-                    'spesifikasi' => $stock->product->product_description,
+                    'spesifikasi' => $stock->spesifikasi,
                     'hargamodal' => $stock->hargamodal,
                     'hargajual' => $stock->hargajual,
                     'tanggal_masuk' => $stock->tanggal_masuk,
                     'tanggal_expired' => $stock->tanggal_expired,
                 ];
             });
+            $data = $data->sortByDesc('stock_id')->values()->all();
 
             return response()->json($data);
         } catch (\Exception $e) {
@@ -52,6 +53,7 @@ class StokController extends Controller
             $stock->product_id = $request->product_id;
             $stock->merchant_id = $request->merchant_id;
             $stock->jumlah_stok = $request->jumlah;
+            $stock->spesifikasi = $request->spesifikasi;
             $stock->sisa_stok = $request->jumlah;
             $stock->hargamodal = $request->hargamodal;
             $stock->hargajual = $request->hargajual;

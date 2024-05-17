@@ -85,7 +85,7 @@
                             </div>
                             <div class="form-group row">
                                 <label
-                                    for="spesifikasiProduk"
+                                    for="spesifikasi"
                                     class="col-md-4 col-form-label text-md-right"
                                     >Spesifikasi Produk</label
                                 >
@@ -93,9 +93,9 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        id="spesifikasiProduk"
-                                        name="spesifikasiProduk"
-                                        v-model="spesifikasiProduk"
+                                        id="spesifikasi"
+                                        name="spesifikasi"
+                                        v-model="spesifikasi"
                                         required
                                     />
                                 </div>
@@ -215,7 +215,7 @@ export default {
             namaProduk: "",
             selectedMerchant: "",
             selectedCategory: null,
-            spesifikasiProduk: "",
+            spesifikasi: "",
             lokasi: "",
             jumlah: 0,
             hargamodal: 0,
@@ -292,6 +292,7 @@ export default {
                     product_id: this.selectedProduct,
                     merchant_id: this.selectedMerchant,
                     jumlah: this.jumlah,
+                    spesifikasi: this.spesifikasi,
                     hargamodal: this.hargamodal,
                     hargajual: this.hargajual,
                     tanggal_expired: this.tanggalExpired,

@@ -68,7 +68,7 @@
                                                 1
                                             }}
                                         </td>
-                                        <td>{{ item.kode_pembelian }}</td>
+                                        <td>{{ item.purchase_id }}</td>
                                         <td>{{ item.product_name }}</td>
                                         <td>{{ item.nama_merchant }}</td>
                                         <td>
@@ -78,7 +78,9 @@
                                         <td>
                                             <a
                                                 href="#"
-                                                @click="showDetail(item)"
+                                                @click.prevent="
+                                                    showDetail(item)
+                                                "
                                                 >Detail</a
                                             >
                                         </td>
@@ -174,6 +176,7 @@
                                     class="form-control"
                                     id="purchaseOrder"
                                     v-model="selectedItem.kode_pembelian"
+                                    readonly
                                 />
                             </div>
                             <div class="form-group">
@@ -183,6 +186,7 @@
                                     class="form-control"
                                     id="namaCustomer"
                                     v-model="selectedItem.name"
+                                    readonly
                                 />
                             </div>
                             <div class="form-group">
@@ -192,6 +196,7 @@
                                     class="form-control"
                                     id="pemesananBarang"
                                     v-model="selectedItem.product_name"
+                                    readonly
                                 />
                             </div>
                             <div class="form-group">
@@ -202,7 +207,10 @@
                                     type="text"
                                     class="form-control"
                                     id="jumlahPesanan"
-                                    v-model="selectedItem.jumlah"
+                                    v-model="
+                                        selectedItem.jumlah_pembelian_produk
+                                    "
+                                    readonly
                                 />
                             </div>
                             <div class="form-group">
@@ -211,7 +219,8 @@
                                     type="text"
                                     class="form-control"
                                     id="namaToko"
-                                    v-model="selectedItem.merchant_name"
+                                    v-model="selectedItem.nama_merchant"
+                                    readonly
                                 />
                             </div>
                             <div class="form-group">
@@ -219,42 +228,26 @@
                                 <textarea
                                     class="form-control"
                                     id="alamat"
-                                    v-model="selectedItem.alamat"
+                                    v-model="selectedItem.user_street_address"
                                     rows="3"
+                                    readonly
                                 ></textarea>
                             </div>
-
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <select
+                                <textarea
                                     class="form-control"
-                                    id="status"
-                                    v-model="selectedItem.status"
-                                >
-                                    <option
-                                        value="Perlu Dikirim"
-                                        style="background-color: #ffe6e6"
-                                    >
-                                        Perlu Dikirim
-                                    </option>
-                                    <option
-                                        value="Perlu Diambil"
-                                        style="background-color: #ffffcc"
-                                    >
-                                        Perlu Diambil
-                                    </option>
-                                    <option
-                                        value="Selesai"
-                                        style="background-color: #ccffcc"
-                                    >
-                                        Selesai
-                                    </option>
-                                </select>
+                                    id="status_pembelian"
+                                    v-model="selectedItem.status_pembelian"
+                                    rows="3"
+                                    readonly
+                                ></textarea>
                             </div>
                             <div class="float-right">
                                 <button
                                     type="button"
                                     class="btn btn-block bg-gradient-primary btn-sm"
+                                    @click="saveChanges"
                                 >
                                     Simpan
                                 </button>
@@ -266,7 +259,6 @@
         </div>
     </section>
 </template>
-
 <script>
 import SearchInput from "@/components/SearchInput.vue";
 import axios from "axios";
@@ -277,7 +269,7 @@ export default {
     },
     data() {
         return {
-            product_purchases: [],
+            purchases: [],
             filteredData: [],
             searchText: "",
             currentPage: 1,
@@ -313,37 +305,36 @@ export default {
         },
     },
     created() {
-        axios
-            .get("https://kreatif.tobakab.go.id/api/pembelian")
-            .then((response) => {
-                this.product_purchases = response.data.product_purchases;
-                this.filteredData = this.product_purchases.map((item) => ({
-                    ...item,
-                    status_pembelian: this.getStatusPembelian(
-                        item.status_pembelian,
-                        item.proof_of_payment_image
-                    ),
-                }));
-            })
-            .catch((error) => {
-                console.error("Error fetching pembelian data:", error);
-            });
+        this.fetchData();
     },
-
     methods: {
+        fetchData() {
+            axios
+                .get("https://kreatif.tobakab.go.id/api/pembelian")
+                .then((response) => {
+                    const purchases = response.data.purchases.map((item) => ({
+                        ...item,
+                        status_pembelian: this.getStatusPembelian(
+                            item.status_pembelian,
+                            item.proof_of_payment_image
+                        ),
+                    }));
+                    this.purchases = purchases;
+                    this.filteredData = purchases;
+                })
+                .catch((error) => {
+                    console.error("Error fetching pembelian data:", error);
+                });
+        },
         getStatusPembelian(status_pembelian, proof_of_payment_image) {
             let status = "";
             if (
                 status_pembelian === "status1" ||
                 status_pembelian === "status1_ambil"
             ) {
-                if (proof_of_payment_image) {
-                    status =
-                        "Bukti Pembayaran Telah Dikirim. SILAHKAN KONFIRMASI.";
-                } else {
-                    status =
-                        "Belum Dapat Dikonfirmasi. TUNGGU BUKTI PEMBAYARAN.";
-                }
+                status = proof_of_payment_image
+                    ? "Bukti Pembayaran Telah Dikirim. SILAHKAN KONFIRMASI."
+                    : "Belum Dapat Dikonfirmasi. TUNGGU BUKTI PEMBAYARAN.";
             } else if (
                 status_pembelian === "status2" ||
                 status_pembelian === "status2_ambil"
@@ -370,49 +361,25 @@ export default {
             }
             return status;
         },
-        showDetail(item) {
-            axios
-                .get(
-                    `https://kreatif.tobakab.go.id/api/pembelian?purchase_id=${item.purchase_id}`
-                )
-                .then((response) => {
-                    const selectedPurchase = response.data.purchases.find(
-                        (purchase) => purchase.purchase_id === item.purchase_id
-                    );
-                    const selectedProduct =
-                        response.data.product_purchases.find(
-                            (product) =>
-                                product.purchase_id === item.purchase_id
-                        );
-                    if (selectedPurchase && selectedProduct) {
-                        this.selectedItem = {
-                            kode_pembelian: selectedPurchase.kode_pembelian,
-                            name: selectedPurchase.name,
-                            product_name: selectedProduct.product_name,
-                            jumlah: selectedProduct.jumlah_pembelian_produk,
-                            merchant_name: selectedProduct.nama_merchant,
-                            status: selectedProduct.status_pembelian,
-                            alamat:
-                                selectedProduct.user_street_address +
-                                ", " +
-                                selectedProduct.subdistrict_name +
-                                ", " +
-                                selectedProduct.city_name +
-                                ", " +
-                                selectedProduct.province_name,
-                        };
-                        $("#detailModal").modal("show");
-                    } else {
-                        console.error(
-                            "Data not found for the selected purchase."
-                        );
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error fetching item detail:", error);
-                });
+        filterData() {
+            this.filteredData = this.purchases.filter((item) => {
+                return (
+                    item.kode_pembelian
+                        .toLowerCase()
+                        .includes(this.searchText.toLowerCase()) ||
+                    item.product_name
+                        .toLowerCase()
+                        .includes(this.searchText.toLowerCase()) ||
+                    item.nama_merchant
+                        .toLowerCase()
+                        .includes(this.searchText.toLowerCase())
+                );
+            });
         },
-
+        showDetail(item) {
+            this.selectedItem = item;
+            $("#detailModal").modal("show");
+        },
         changePage(pageNumber) {
             this.currentPage = pageNumber;
         },
@@ -425,6 +392,10 @@ export default {
             if (this.currentPage > 1) {
                 this.currentPage--;
             }
+        },
+        saveChanges() {
+            // Implement the save changes logic here
+            $("#detailModal").modal("hide");
         },
     },
 };
