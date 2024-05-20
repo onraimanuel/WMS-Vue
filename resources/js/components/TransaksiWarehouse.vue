@@ -2,7 +2,6 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <!-- Bagian header card -->
                 <div class="card-header">
                     <h3 class="card-title">Transaksi pada Warehouse</h3>
                 </div>
@@ -29,13 +28,13 @@
                                 v-for="(transaction, index) in paginatedData"
                                 :key="transaction.transaksi_id"
                             >
-                                <td>{{ index + 1 }}</td>
                                 <td>
-                                    {{ transaction.product_name }}
+                                    {{
+                                        (currentPage - 1) * perPage + index + 1
+                                    }}
                                 </td>
-                                <td>
-                                    {{ transaction.nama_merchant }}
-                                </td>
+                                <td>{{ transaction.product_name }}</td>
+                                <td>{{ transaction.nama_merchant }}</td>
                                 <td class="text-center">
                                     {{ transaction.jumlah_barang_keluar }}
                                 </td>
@@ -136,17 +135,11 @@
         </div>
     </section>
 </template>
-
 <script>
 import axios from "axios";
-import SearchInput from "@/components/SearchInput.vue";
-import PrintButton from "./PrintButton.vue";
+import moment from "moment";
 
 export default {
-    components: {
-        SearchInput,
-        PrintButton,
-    },
     data() {
         return {
             dataStok: [],
@@ -183,6 +176,17 @@ export default {
                 { length: endPage - startPage + 1 },
                 (_, i) => startPage + i
             );
+        },
+    },
+    watch: {
+        currentPage() {
+            this.paginateData();
+        },
+        perPage() {
+            this.paginateData();
+        },
+        filteredData() {
+            this.paginateData();
         },
     },
     mounted() {
@@ -229,12 +233,16 @@ export default {
     },
 };
 </script>
+<style scoped>
+.page-item.disabled .page-link {
+    pointer-events: none;
+    opacity: 0.6;
+}
 
-<style>
-.col-sm-2 > * {
-    margin-bottom: 7px;
-    position: relative;
-    left: 110px;
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
 }
 
 .table table-bordered table-striped > * {

@@ -263,7 +263,6 @@ export default {
                 // Ambil data transaksi
                 await this.fetchTransactions();
 
-                // Hitung jumlah total barang yang sudah keluar
                 this.totalItemsSold = this.calculateTotalItemsSold();
             } catch (error) {
                 console.error("Error fetching products:", error);

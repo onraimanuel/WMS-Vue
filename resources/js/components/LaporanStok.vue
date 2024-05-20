@@ -9,8 +9,8 @@
                     <div class="row">
                         <div class="col-sm-9">
                             <div class="dataTables_length" id="example1_length">
-                                <label
-                                    >Show
+                                <label>
+                                    Show
                                     <select
                                         v-model="perPage"
                                         class="custom-select custom-select-sm form-control form-control-sm"
@@ -63,13 +63,11 @@
                                 v-for="(item, index) in displayedProducts"
                                 :key="index"
                             >
-                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.index }}</td>
                                 <td>{{ item.merchant_name }}</td>
                                 <td>{{ item.kategori }}</td>
                                 <td>{{ item.product_name }}</td>
-                                <td class="text-center">
-                                    {{ item.stok }}
-                                </td>
+                                <td class="text-center">{{ item.stok }}</td>
                                 <td class="text-center">
                                     {{ item.total_barang_keluar }}
                                 </td>
@@ -82,7 +80,6 @@
                                 <td class="text-center">
                                     {{ formatToRupiah(item.hargajual) }}
                                 </td>
-
                                 <td class="text-center">
                                     {{
                                         formatToRupiah(
@@ -91,9 +88,7 @@
                                         )
                                     }}
                                 </td>
-                                <td>
-                                    {{ formatDate(item.tanggal_masuk) }}
-                                </td>
+                                <td>{{ formatDate(item.tanggal_masuk) }}</td>
                                 <td class="text-center">
                                     {{ formatDate(item.transaksi_terakhir) }}
                                 </td>
@@ -172,8 +167,7 @@
 
 <script>
 import axios from "axios";
-import moment from "moment"; // tambahkan import moment
-
+import moment from "moment";
 import SearchInput from "@/components/SearchInput.vue";
 import PrintButton from "./PrintButton.vue";
 
@@ -191,7 +185,7 @@ export default {
             perPage: 10,
             maxPageLinks: 5,
             entryOptions: [5, 10, 15, 20],
-            totalKeuntunganKeseluruhan: 0, // tambahkan properti totalKeuntunganKeseluruhan
+            totalKeuntunganKeseluruhan: 0,
         };
     },
 
@@ -202,10 +196,13 @@ export default {
         displayedProducts() {
             const start = (this.currentPage - 1) * this.perPage;
             const end = start + this.perPage;
-            return this.filteredData.slice(start, end).map((item) => ({
+            const slicedData = this.filteredData.slice(start, end);
+            const startIndex = (this.currentPage - 1) * this.perPage + 1;
+            const displayedWithIndex = slicedData.map((item, index) => ({
                 ...item,
-                sisaStok: item.stokMasuk - item.stokKeluar,
+                index: startIndex + index,
             }));
+            return displayedWithIndex;
         },
         pagesToShow() {
             const pageCount = this.totalPages;
@@ -237,7 +234,7 @@ export default {
                 .then((response) => {
                     this.dataStok = response.data;
                     this.filteredData = this.dataStok;
-                    this.hitungTotalKeuntunganKeseluruhan(); // panggil fungsi hitungTotalKeuntunganKeseluruhan
+                    this.hitungTotalKeuntunganKeseluruhan();
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);
@@ -264,7 +261,7 @@ export default {
                         .toLowerCase()
                         .includes(searchValue.toLowerCase())
             );
-            this.hitungTotalKeuntunganKeseluruhan(); // panggil fungsi hitungTotalKeuntunganKeseluruhan
+            this.hitungTotalKeuntunganKeseluruhan();
         },
         prevPage() {
             if (this.currentPage > 1) {
