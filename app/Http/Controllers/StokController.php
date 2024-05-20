@@ -113,44 +113,33 @@ class StokController extends Controller
         try {
             $client = new Client();
     
-            // Ambil data produk dari API eksternal
             $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
             if ($response_product->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data produk dari API');
             }
             $products = json_decode($response_product->getBody()->getContents(), true);
     
-            // Ambil data kategori dari API eksternal
             $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
             if ($response_category->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data kategori dari API');
             }
             $categories = json_decode($response_category->getBody()->getContents(), true);
     
-            // Buat peta kategori berdasarkan category_id
             $categoryMap = collect($categories)->keyBy('category_id');
     
-            // Ambil data stok dari database
             $stocks = Stock::with(['merchant', 'transaksi'])->get();
     
-            // Map data stok dengan data produk dari API
             $data = $stocks->map(function ($stock) use ($products, $categoryMap) {
-                // Cari produk berdasarkan product_id
                 $product = collect($products)->firstWhere('product_id', $stock->product_id);
     
-                // Cari kategori berdasarkan category_id produk
                 $category = $product ? $categoryMap->get($product['category_id']) : null;
     
-                // Hitung total barang keluar
                 $totalBarangKeluar = $stock->transaksi->sum('jumlah_barang_keluar');
     
-                // Hitung stok tersisa
                 $stokTersisa = max($stock->jumlah_stok - $totalBarangKeluar, 0);
     
-                // Ambil transaksi terakhir
                 $transaksiTerakhir = $stock->transaksi->max('created_at');
     
-                // Pastikan tanggal transaksi terakhir valid
                 $transaksiTerakhir = $transaksiTerakhir ? $transaksiTerakhir->toDateTimeString() : null;
     
                 return [
