@@ -30,8 +30,10 @@ Route::middleware(['web'])->group(function () {
     Route::get('/stok', [StokController::class, 'index']);
     Route::get('/LaporandataStok', [StokController::class, 'LaporanStok']);
     Route::post('/addstock', [StokController::class, 'addStock']);
+    Route::delete('/stok/{id}', [StokController::class, 'destroy']);
 
 
+ 
     Route::get('/TransaksiWarehouse', [TransaksiWarehouseController::class, 'index'])->name("TransaksiWarehouse");
     Route::get('/dataTransaksi', [TransaksiWarehouseController::class, 'dataTransaksi'])->name("dataTransaksi");
     Route::get('/TambahTransaksi', [TransaksiWarehouseController::class, 'TambahTransaksi'])->name("TambahTransaksi");

@@ -166,6 +166,17 @@ class StokController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        try {
+            $stock = Stock::findOrFail($id);
+            $stock->delete();
+            return response()->json(['message' => 'Stok berhasil dihapus'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Stok tidak ditemukan atau tidak bisa dihapus', 'details' => $e->getMessage()], 500);
+        }
+    }
+
 }
 
 

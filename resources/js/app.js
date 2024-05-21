@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import moment from "moment";
 import Login from "./components/Login.vue";
 import Dashboard from "./components/Dashboard.vue";
 import ProdukToko from "./components/ProdukToko.vue";
@@ -10,10 +11,12 @@ import TambahProduk from "./components/TambahProduk.vue";
 import TransaksiWarehouse from "./components/TransaksiWarehouse.vue";
 import TambahTransaksi from "./components/TambahTransaksi.vue";
 
-import EditProduk from "./components/editproduk.vue";
+import EditProduk from "./components/EditProduk.vue";
 
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -25,7 +28,7 @@ const router = createRouter({
         { path: "/LaporanPemesanan", component: LaporanPemesanan },
         { path: "/LaporanStok", component: LaporanStok },
         { path: "/TambahProduk", component: TambahProduk },
-        { path: "/EditProduk/:id", component: EditProduk },
+        { path: "/EditProduk/:id", name:'EditProduk', component: EditProduk },
         { path: "/TransaksiWarehouse", component: TransaksiWarehouse },
         { path: "/TambahTransaksi", component: TambahTransaksi },
     ],
