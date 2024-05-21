@@ -50,7 +50,6 @@ class StokController extends Controller
                     'spesifikasi' => $stock->spesifikasi,
                     'hargamodal' => $stock->hargamodal,
                     'hargajual' => $stock->hargajual,
-                    'berat' => $stock->heavy,
                     'tanggal_masuk' => $stock->tanggal_masuk,
                     'tanggal_expired' => $stock->tanggal_expired,
                 ];
@@ -99,7 +98,6 @@ class StokController extends Controller
             $stock->sisa_stok = $request->jumlah;
             $stock->hargamodal = $request->hargamodal;
             $stock->hargajual = $request->hargajual;
-            $stock->heavy = $product['heavy']; 
             $stock->tanggal_masuk = now();
             $stock->tanggal_expired = $request->tanggal_expired;
             $stock->lokasi = $request->lokasi;
@@ -132,6 +130,46 @@ class StokController extends Controller
             return response()->json(['message' => 'Stok berhasil ditambahkan dan diupdate di marketplace'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $stock = Stock::findOrFail($id);
+            $jumlahStok = $stock->jumlah_stok;
+            $stock->delete();
+
+            $client = new Client();
+            $response_marketplace_previous = $client->get('http://kreatif.tobakab.go.id/api/getstock/' . $stock->product_id, [
+                'verify' => false,
+            ]);
+            
+            if ($response_marketplace_previous->getStatusCode() !== 200) {
+                throw new \Exception('Gagal mengambil stok sebelumnya dari marketplace');
+            }
+            
+            $stock_previous = json_decode($response_marketplace_previous->getBody()->getContents(), true);
+            
+            $new_stock = $stock_previous['stok'] - $jumlahStok;
+
+            $response_marketplace = $client->post('http://kreatif.tobakab.go.id/api/updatestock', [
+                'form_params' => [
+                    'product_id' => $stock->product_id,
+                    'stok' => $new_stock,
+                ],
+                'verify' => false,
+            ]);
+
+            if ($response_marketplace->getStatusCode() !== 200) {
+                throw new \Exception('Gagal mengupdate stok di marketplace');
+            }
+
+            return response()->json(['message' => 'Stok berhasil dihapus dan diupdate di marketplace'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Stok tidak ditemukan', 'details' => $e->getMessage()], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan saat menghapus stok', 'details' => $e->getMessage()], 500);
         }
     }
     
@@ -192,46 +230,6 @@ class StokController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-    public function destroy($id)
-{
-    try {
-        $stock = Stock::findOrFail($id);
-        $jumlahStok = $stock->jumlah_stok;
-        $stock->delete();
-
-        $client = new Client();
-        $response_marketplace_previous = $client->get('http://kreatif.tobakab.go.id/api/getstock/' . $stock->product_id, [
-            'verify' => false,
-        ]);
-        
-        if ($response_marketplace_previous->getStatusCode() !== 200) {
-            throw new \Exception('Gagal mengambil stok sebelumnya dari marketplace');
-        }
-        
-        $stock_previous = json_decode($response_marketplace_previous->getBody()->getContents(), true);
-        
-        $new_stock = $stock_previous['stok'] - $jumlahStok;
-
-        $response_marketplace = $client->post('http://kreatif.tobakab.go.id/api/updatestock', [
-            'form_params' => [
-                'product_id' => $stock->product_id,
-                'stok' => $new_stock,
-            ],
-            'verify' => false,
-        ]);
-
-        if ($response_marketplace->getStatusCode() !== 200) {
-            throw new \Exception('Gagal mengupdate stok di marketplace');
-        }
-
-        return response()->json(['message' => 'Stok berhasil dihapus dan diupdate di marketplace'], 200);
-    } catch (ModelNotFoundException $e) {
-        return response()->json(['error' => 'Stok tidak ditemukan', 'details' => $e->getMessage()], 404);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Terjadi kesalahan saat menghapus stok', 'details' => $e->getMessage()], 500);
-    }
-}
     
     public function show($id)
     {

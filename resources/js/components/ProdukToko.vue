@@ -22,7 +22,6 @@
                                     </th>
                                     <th>Harga Modal</th>
                                     <th>Harga Jual</th>
-                                    <th>Berat Produk</th>
                                     <th>Tanggal Masuk</th>
                                     <th>Tanggal Expired</th>
                                     <th>Action</th>
@@ -51,9 +50,6 @@
                                     </td>
                                     <td class="text-center">
                                         {{ product.spesifikasi }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ product.berat }}
                                     </td>
                                     <td class="text-center">
                                         {{ formatToRupiah(product.hargamodal) }}
