@@ -68,7 +68,7 @@
                                                 1
                                             }}
                                         </td>
-                                        <td>{{ item.purchase_id }}</td>
+                                        <td>{{ item.kode_pembelian }}</td>
                                         <td>{{ item.product_name }}</td>
                                         <td>{{ item.nama_merchant }}</td>
                                         <td>

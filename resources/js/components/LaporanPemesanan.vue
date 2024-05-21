@@ -149,7 +149,7 @@ export default {
     },
     data() {
         return {
-            product_purchases: [],
+            purchases: [],
             datefilter: "",
             endDateFilter: "",
             datePickerConfig: {
@@ -174,14 +174,12 @@ export default {
                 alert("Tanggal akhir harus setelah tanggal awal.");
                 return;
             }
-            this.product_purchases = this.product_purchases.filter(
-                (purchase) => {
-                    const purchaseDate = moment(purchase.created_at).format(
-                        "YYYY-MM-DD"
-                    );
-                    return purchaseDate >= startDate && purchaseDate <= endDate;
-                }
-            );
+            this.purchases = this.purchases.filter((purchase) => {
+                const purchaseDate = moment(purchase.created_at).format(
+                    "YYYY-MM-DD"
+                );
+                return purchaseDate >= startDate && purchaseDate <= endDate;
+            });
         },
 
         formatDate(date) {
@@ -190,9 +188,9 @@ export default {
 
         fetchData() {
             axios
-                .get("http://127.0.0.1:8001/api/pembelian")
+                .get("https://kreatif.tobakab.go.id/api/pembelian")
                 .then((response) => {
-                    this.product_purchases = response.data.product_purchases;
+                    this.purchases = response.data.purchases;
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);
@@ -241,16 +239,16 @@ export default {
         endIndex() {
             return Math.min(
                 this.startIndex + this.perPage - 1,
-                this.product_purchases.length
+                this.purchases.length
             );
         },
         paginatedData() {
             const start = (this.currentPage - 1) * this.perPage;
             const end = start + this.perPage;
-            return this.product_purchases.slice(start, end);
+            return this.purchases.slice(start, end);
         },
         totalPages() {
-            return Math.ceil(this.product_purchases.length / this.perPage);
+            return Math.ceil(this.purchases.length / this.perPage);
         },
         pagesToShow() {
             const maxVisiblePages = 5;
