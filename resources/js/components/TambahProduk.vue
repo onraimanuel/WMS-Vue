@@ -138,6 +138,24 @@
                             </div>
                             <div class="form-group row">
                                 <label
+                                    for="heavy"
+                                    class="col-md-4 col-form-label text-md-right"
+                                    >Berat Produk</label
+                                >
+
+                                <div class="col-md-8">
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="heavy"
+                                        name="heavy"
+                                        v-model="heavy"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label
                                     for="hargamodal"
                                     class="col-md-4 col-form-label text-md-right"
                                     >Harga Modal</label
@@ -209,6 +227,7 @@
 
 <script>
 import axios from "axios";
+
 export default {
     data() {
         return {
@@ -218,6 +237,7 @@ export default {
             spesifikasi: "",
             lokasi: "",
             jumlah: 0,
+            heavy: 0,
             hargamodal: 0,
             hargajual: 0,
             tanggalExpired: "",
@@ -297,6 +317,7 @@ export default {
                     hargajual: this.hargajual,
                     tanggal_expired: this.tanggalExpired,
                     lokasi: this.lokasi,
+                    heavy: this.heavy,
                 });
 
                 if (response.status === 200) {

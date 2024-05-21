@@ -50,6 +50,7 @@ class StokController extends Controller
                     'spesifikasi' => $stock->spesifikasi,
                     'hargamodal' => $stock->hargamodal,
                     'hargajual' => $stock->hargajual,
+                    'berat' => $stock->heavy,
                     'tanggal_masuk' => $stock->tanggal_masuk,
                     'tanggal_expired' => $stock->tanggal_expired,
                 ];
@@ -73,36 +74,62 @@ class StokController extends Controller
                 'hargajual' => 'required|numeric|min:1',
                 'tanggal_expired' => 'required|date',
             ]);
-    
+
             $client = new Client();
             $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
-    
+
             if ($response_product->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data produk dari API');
             }
-    
+
             $products = json_decode($response_product->getBody()->getContents(), true);
-    
+
             $productId = $request->input('product_id');
             $product = collect($products)->firstWhere('product_id', $productId);
-    
+
             if (!$product) {
                 throw new \Exception('Produk tidak ditemukan dalam database eksternal');
             }
-    
+
             $stock = new Stock();
-            $stock->product_id = $productId; 
+            $stock->product_id = $productId;
             $stock->merchant_id = $request->merchant_id;
             $stock->jumlah_stok = $request->jumlah;
             $stock->spesifikasi = $request->spesifikasi;
             $stock->sisa_stok = $request->jumlah;
             $stock->hargamodal = $request->hargamodal;
             $stock->hargajual = $request->hargajual;
+            $stock->heavy = $product['heavy']; 
             $stock->tanggal_masuk = now();
             $stock->tanggal_expired = $request->tanggal_expired;
             $stock->lokasi = $request->lokasi;
             $stock->save();
-            return response()->json(['message' => 'Stok berhasil ditambahkan'], 200);
+
+            $response_marketplace_previous = $client->get('http://kreatif.tobakab.go.id/api/getstock/' . $productId, [
+                'verify' => false,
+            ]);
+            
+            if ($response_marketplace_previous->getStatusCode() !== 200) {
+                throw new \Exception('Gagal mengambil stok produk dari marketplace');
+            }
+            
+            $stock_previous = json_decode($response_marketplace_previous->getBody()->getContents(), true);
+            
+            $new_stock = $stock_previous['stok'] + $request->jumlah;
+            
+            $response_marketplace = $client->post('http://kreatif.tobakab.go.id/api/updatestock', [
+                'form_params' => [
+                    'product_id' => $productId,
+                    'stok' => $new_stock,
+                ],
+                'verify' => false,
+            ]);
+
+            if ($response_marketplace->getStatusCode() !== 200) {
+                throw new \Exception('Gagal mengupdate stok di marketplace');
+            }
+
+            return response()->json(['message' => 'Stok berhasil ditambahkan dan diupdate di marketplace'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -167,67 +194,87 @@ class StokController extends Controller
     }
 
     public function destroy($id)
-    {
-        try {
-            $stock = Stock::findOrFail($id);
-            $stock->delete();
-            return response()->json(['message' => 'Stok berhasil dihapus'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Stok tidak ditemukan atau tidak bisa dihapus', 'details' => $e->getMessage()], 500);
-        }
-    }
-
-    public function show($id)
 {
     try {
-        $stock = Stock::with(['merchant'])->findOrFail($id);
+        $stock = Stock::findOrFail($id);
+        $jumlahStok = $stock->jumlah_stok;
+        $stock->delete();
 
         $client = new Client();
+        $response_marketplace_previous = $client->get('http://kreatif.tobakab.go.id/api/getstock/' . $stock->product_id, [
+            'verify' => false,
+        ]);
+        
+        if ($response_marketplace_previous->getStatusCode() !== 200) {
+            throw new \Exception('Gagal mengambil stok sebelumnya dari marketplace');
+        }
+        
+        $stock_previous = json_decode($response_marketplace_previous->getBody()->getContents(), true);
+        
+        $new_stock = $stock_previous['stok'] - $jumlahStok;
 
-        $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
-        $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
+        $response_marketplace = $client->post('http://kreatif.tobakab.go.id/api/updatestock', [
+            'form_params' => [
+                'product_id' => $stock->product_id,
+                'stok' => $new_stock,
+            ],
+            'verify' => false,
+        ]);
 
-        if ($response_product->getStatusCode() !== 200 || $response_category->getStatusCode() !== 200) {
-            throw new \Exception('Gagal mengambil data produk atau kategori dari API');
+        if ($response_marketplace->getStatusCode() !== 200) {
+            throw new \Exception('Gagal mengupdate stok di marketplace');
         }
 
-        $products = json_decode($response_product->getBody()->getContents(), true);
-        $categories = json_decode($response_category->getBody()->getContents(), true);
-
-        $productMap = collect($products)->keyBy('product_id');
-        $categoryMap = collect($categories)->keyBy('category_id');
-
-        $product = $productMap->get($stock->product_id);
-        $categoryId = $product['category_id'] ?? null;
-        $categoryName = $categoryMap->get($categoryId)['nama_kategori'] ?? 'Kategori Tidak Ditemukan';
-
-        $data = [
-            'stock_id' => $stock->stock_id,
-            'product_name' => $product['product_name'] ?? 'Produk Tidak Ditemukan',
-            'merchant_name' => $stock->merchant->nama_merchant,
-            'stok' => $stock->jumlah_stok,
-            'sisa_stok' => $stock->sisa_stok,
-            'kategori' => $categoryName,
-            'spesifikasi' => $stock->spesifikasi,
-            'hargamodal' => $stock->hargamodal,
-            'hargajual' => $stock->hargajual,
-            'tanggal_masuk' => $stock->tanggal_masuk,
-            'tanggal_expired' => $stock->tanggal_expired,
-        ];
-
-        return response()->json($data, 200);
+        return response()->json(['message' => 'Stok berhasil dihapus dan diupdate di marketplace'], 200);
+    } catch (ModelNotFoundException $e) {
+        return response()->json(['error' => 'Stok tidak ditemukan', 'details' => $e->getMessage()], 404);
     } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+        return response()->json(['error' => 'Terjadi kesalahan saat menghapus stok', 'details' => $e->getMessage()], 500);
     }
 }
+    
+    public function show($id)
+    {
+        try {
+            $stock = Stock::with(['merchant'])->findOrFail($id);
+
+            $client = new Client();
+
+            $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
+            $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
+
+            if ($response_product->getStatusCode() !== 200 || $response_category->getStatusCode() !== 200) {
+                throw new \Exception('Gagal mengambil data produk atau kategori dari API');
+            }
+
+            $products = json_decode($response_product->getBody()->getContents(), true);
+            $categories = json_decode($response_category->getBody()->getContents(), true);
+
+            $productMap = collect($products)->keyBy('product_id');
+            $categoryMap = collect($categories)->keyBy('category_id');
+
+            $product = $productMap->get($stock->product_id);
+            $categoryId = $product['category_id'] ?? null;
+            $categoryName = $categoryMap->get($categoryId)['nama_kategori'] ?? 'Kategori Tidak Ditemukan';
+
+            $data = [
+                'stock_id' => $stock->stock_id,
+                'product_name' => $product['product_name'] ?? 'Produk Tidak Ditemukan',
+                'merchant_name' => $stock->merchant->nama_merchant,
+                'stok' => $stock->jumlah_stok,
+                'sisa_stok' => $stock->sisa_stok,
+                'kategori' => $categoryName,
+                'spesifikasi' => $stock->spesifikasi,
+                'hargamodal' => $stock->hargamodal,
+                'hargajual' => $stock->hargajual,
+                'tanggal_masuk' => $stock->tanggal_masuk,
+                'tanggal_expired' => $stock->tanggal_expired,
+            ];
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 }
-
-
-
-
-
-
-
-
-
