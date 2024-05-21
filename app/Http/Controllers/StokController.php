@@ -103,8 +103,8 @@ class StokController extends Controller
             $stock->lokasi = $request->lokasi;
             $stock->save();
 
-            $response_marketplace_previous = $client->get('http://kreatif.tobakab.go.id/api/getstock/' . $productId, [
-                'verify' => false,
+            $response_marketplace_previous = $client->get('https://kreatif.tobakab.go.id/api/getstock/' . $productId, [
+                'verify' => true,
             ]);
             
             if ($response_marketplace_previous->getStatusCode() !== 200) {
@@ -115,12 +115,12 @@ class StokController extends Controller
             
             $new_stock = $stock_previous['stok'] + $request->jumlah;
             
-            $response_marketplace = $client->post('http://kreatif.tobakab.go.id/api/updatestock', [
+            $response_marketplace = $client->post('https://kreatif.tobakab.go.id/api/updatestock', [
                 'form_params' => [
                     'product_id' => $productId,
                     'stok' => $new_stock,
                 ],
-                'verify' => false,
+                'verify' => true,
             ]);
 
             if ($response_marketplace->getStatusCode() !== 200) {
@@ -141,7 +141,7 @@ class StokController extends Controller
             $stock->delete();
 
             $client = new Client();
-            $response_marketplace_previous = $client->get('http://kreatif.tobakab.go.id/api/getstock/' . $stock->product_id, [
+            $response_marketplace_previous = $client->get('https://kreatif.tobakab.go.id/api/getstock/' . $stock->product_id, [
                 'verify' => false,
             ]);
             
@@ -153,7 +153,7 @@ class StokController extends Controller
             
             $new_stock = $stock_previous['stok'] - $jumlahStok;
 
-            $response_marketplace = $client->post('http://kreatif.tobakab.go.id/api/updatestock', [
+            $response_marketplace = $client->post('https://kreatif.tobakab.go.id/api/updatestock', [
                 'form_params' => [
                     'product_id' => $stock->product_id,
                     'stok' => $new_stock,
