@@ -177,6 +177,50 @@ class StokController extends Controller
         }
     }
 
+    public function show($id)
+{
+    try {
+        $stock = Stock::with(['merchant'])->findOrFail($id);
+
+        $client = new Client();
+
+        $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
+        $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
+
+        if ($response_product->getStatusCode() !== 200 || $response_category->getStatusCode() !== 200) {
+            throw new \Exception('Gagal mengambil data produk atau kategori dari API');
+        }
+
+        $products = json_decode($response_product->getBody()->getContents(), true);
+        $categories = json_decode($response_category->getBody()->getContents(), true);
+
+        $productMap = collect($products)->keyBy('product_id');
+        $categoryMap = collect($categories)->keyBy('category_id');
+
+        $product = $productMap->get($stock->product_id);
+        $categoryId = $product['category_id'] ?? null;
+        $categoryName = $categoryMap->get($categoryId)['nama_kategori'] ?? 'Kategori Tidak Ditemukan';
+
+        $data = [
+            'stock_id' => $stock->stock_id,
+            'product_name' => $product['product_name'] ?? 'Produk Tidak Ditemukan',
+            'merchant_name' => $stock->merchant->nama_merchant,
+            'stok' => $stock->jumlah_stok,
+            'sisa_stok' => $stock->sisa_stok,
+            'kategori' => $categoryName,
+            'spesifikasi' => $stock->spesifikasi,
+            'hargamodal' => $stock->hargamodal,
+            'hargajual' => $stock->hargajual,
+            'tanggal_masuk' => $stock->tanggal_masuk,
+            'tanggal_expired' => $stock->tanggal_expired,
+        ];
+
+        return response()->json($data, 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
 }
 
 

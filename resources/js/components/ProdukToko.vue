@@ -74,7 +74,11 @@
                                                     data-toggle="tooltip"
                                                     data-placement="top"
                                                     title="Edit"
-                                                    @click="editProduct(product.stock_id)"
+                                                    @click="
+                                                        editProduct(
+                                                            product.stock_id
+                                                        )
+                                                    "
                                                 >
                                                     <i class="fa fa-edit"></i>
                                                 </button>
@@ -86,7 +90,11 @@
                                                     data-toggle="tooltip"
                                                     data-placement="top"
                                                     title="Delete"
-                                                    @click="deleteProduct(product.stock_id)"
+                                                    @click="
+                                                        deleteProduct(
+                                                            product.stock_id
+                                                        )
+                                                    "
                                                 >
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -166,10 +174,10 @@
         </section>
     </div>
 </template>
-
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 export default {
     data() {
@@ -219,7 +227,7 @@ export default {
         },
     },
     methods: {
-    async fetchProducts() {
+        async fetchProducts() {
             try {
                 const response = await axios.get("/stok");
                 this.products = response.data;
@@ -227,36 +235,50 @@ export default {
                 console.error("Error fetching products:", error);
             }
         },
-
         editProduct(stockId) {
-            this.$router.push({ name: 'EditProduk', params: { id: stockId } });
+            this.$router.push({ name: "EditProduk", params: { id: stockId } });
         },
-
         async deleteProduct(stockId) {
             Swal.fire({
-                title: 'Apakah Anda yakin?',
+                title: "Apakah Anda yakin?",
                 text: "Anda tidak akan bisa mengembalikan ini!",
-                icon: 'warning',
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!'
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, hapus!",
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
                         const response = await axios.delete(`/stok/${stockId}`);
-                        this.products = this.products.filter(product => product.stock_id !== stockId);
-                        Swal.fire(
-                            'Terhapus!',
-                            response.data.message,
-                            'success'
-                        );
+
+                        if (response.status === 200) {
+                            this.products = this.products.filter(
+                                (product) => product.stock_id !== stockId
+                            );
+                            Swal.fire(
+                                "Terhapus!",
+                                response.data.message ||
+                                    "Produk berhasil dihapus.",
+                                "success"
+                            );
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Gagal menghapus produk.",
+                                "error"
+                            );
+                        }
                     } catch (error) {
                         console.error("Error deleting product:", error);
                         Swal.fire(
-                            'Gagal!',
-                            'Gagal menghapus produk',
-                            'error'
+                            "Gagal!",
+                            `Gagal menghapus produk: ${
+                                error.response
+                                    ? `${error.response.status} - ${error.response.statusText}`
+                                    : error.message
+                            }`,
+                            "error"
                         );
                     }
                 }
@@ -279,7 +301,7 @@ export default {
             this.currentPage = 1;
         },
         redirectToTambahProduk() {
-            window.location.href = "/TambahProduk";
+            this.$router.push({ name: "TambahProduk" });
         },
         formatDate(date) {
             return moment(date).format("DD-MM-YYYY");
@@ -297,5 +319,4 @@ export default {
     },
 };
 </script>
-
 <style scoped></style>
