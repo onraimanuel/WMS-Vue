@@ -8,6 +8,7 @@
                     </div>
                     <div class="card-body table-responsive">
                         <table
+                            v-if="filteredProducts.length > 0"
                             id="example1"
                             class="table table-bordered table-striped"
                         >
@@ -29,7 +30,9 @@
                             </thead>
                             <tbody>
                                 <tr
-                                    v-for="(product, index) in products"
+                                    v-for="(
+                                        product, index
+                                    ) in displayedProducts"
                                     :key="index"
                                 >
                                     <td class="text-center">
@@ -39,9 +42,7 @@
                                             (currentPage - 1) * perPage
                                         }}
                                     </td>
-                                    <td>
-                                        {{ product.product_name }}
-                                    </td>
+                                    <td>{{ product.product_name }}</td>
                                     <td class="text-center">
                                         {{ product.sisa_stok }}
                                     </td>
@@ -104,6 +105,38 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="card-body table-responsive" v-else>
+                            <table
+                                id="example1"
+                                class="table table-bordered table-striped"
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Produk</th>
+                                        <th>Stok</th>
+                                        <th style="width: 10%">
+                                            Kategori Produk
+                                        </th>
+                                        <th style="width: 20%">
+                                            Spesifikasi Produk
+                                        </th>
+                                        <th>Harga Modal</th>
+                                        <th>Harga Jual</th>
+                                        <th>Tanggal Masuk</th>
+                                        <th>Tanggal Expired</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="10">
+                                            Produk pada Warehouse Kosong
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <br />
                         <div class="row">
                             <div class="col-md-6">
@@ -174,6 +207,7 @@
         </section>
     </div>
 </template>
+
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -319,4 +353,5 @@ export default {
     },
 };
 </script>
+
 <style scoped></style>

@@ -90,6 +90,7 @@
                 </div>
                 <div class="card-body table-responsive">
                     <table
+                        v-if="filteredProducts.length > 0"
                         id="example1"
                         class="table table-bordered table-striped"
                     >
@@ -107,7 +108,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(product, index) in products"
+                                v-for="(product, index) in displayedProducts"
                                 :key="index"
                             >
                                 <td>
@@ -127,6 +128,32 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div v-else class="card-body table-responsive">
+                        <table
+                            id="example1"
+                            class="table table-bordered table-striped"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Produk</th>
+                                    <th>Nama Tenant</th>
+                                    <th>Jumlah Barang Tersedia</th>
+                                    <th>Kategori Produk</th>
+                                    <th>Spesifikasi Produk</th>
+                                    <th>Tanggal Masuk</th>
+                                    <th>Tanggal Expired</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        Produk pada Warehouse Kosong
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <br />
                     <div class="row">
                         <div class="col-md-6">
@@ -198,6 +225,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment";
 
 export default {
     data() {
