@@ -100,7 +100,6 @@
                                     />
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label
                                     for="lokasi"
@@ -209,6 +208,7 @@
 
 <script>
 import axios from "axios";
+import { inject } from "vue";
 
 export default {
     data() {
@@ -228,6 +228,11 @@ export default {
         };
     },
 
+    setup() {
+        const apiUrl = inject("apiUrl");
+        return { apiUrl };
+    },
+
     mounted() {
         this.fetchMerchants();
         this.fetchCategories();
@@ -237,17 +242,8 @@ export default {
     methods: {
         async fetchMerchants() {
             try {
-                const response = await fetch(
-                    "https://kreatif.tobakab.go.id/api/daftartenant"
-                );
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch merchants");
-                }
-
-                const data = await response.json();
-
-                this.merchants = data;
+                const response = await axios.get(`${this.apiUrl}/daftartenant`);
+                this.merchants = response.data;
             } catch (error) {
                 console.error("Error fetching merchants:", error);
             }
@@ -255,17 +251,10 @@ export default {
 
         async fetchCategories() {
             try {
-                const response = await fetch(
-                    "https://kreatif.tobakab.go.id/api/pilihkategori"
+                const response = await axios.get(
+                    `${this.apiUrl}/pilihkategori`
                 );
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch categories");
-                }
-
-                const data = await response.json();
-
-                this.categories = data;
+                this.categories = response.data;
             } catch (error) {
                 console.error("Error fetching categories:", error);
             }
@@ -273,23 +262,18 @@ export default {
 
         async fetchProducts() {
             try {
-                const response = await fetch(
-                    "https://kreatif.tobakab.go.id/api/listdaftarproduk"
+                const response = await axios.get(
+                    `${this.apiUrl}/listdaftarproduk`
                 );
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch products");
-                }
-
-                const data = await response.json();
-                this.products = data;
+                this.products = response.data;
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         },
+
         async tambahProduk() {
             try {
-                const response = await axios.post("/addstock", {
+                const response = await axios.post(`/addstock`, {
                     product_id: this.selectedProduct,
                     merchant_id: this.selectedMerchant,
                     jumlah: this.jumlah,

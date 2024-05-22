@@ -141,7 +141,6 @@
             </div>
         </div>
 
-        <!-- Detail Modal -->
         <div
             id="detailModal"
             class="modal fade"
@@ -259,9 +258,11 @@
         </div>
     </section>
 </template>
+
 <script>
 import SearchInput from "@/components/SearchInput.vue";
 import axios from "axios";
+import { inject } from "vue";
 
 export default {
     components: {
@@ -277,6 +278,10 @@ export default {
             entryOptions: [5, 10, 15, 20],
             selectedItem: null,
         };
+    },
+    setup() {
+        const apiUrl = inject("apiUrl");
+        return { apiUrl };
     },
     computed: {
         totalPages() {
@@ -310,7 +315,7 @@ export default {
     methods: {
         fetchData() {
             axios
-                .get("https://kreatif.tobakab.go.id/api/pembelian")
+                .get(`${this.apiUrl}/pembelian`)
                 .then((response) => {
                     const purchases = response.data.purchases.map((item) => ({
                         ...item,
@@ -394,7 +399,6 @@ export default {
             }
         },
         saveChanges() {
-            // Implement the save changes logic here
             $("#detailModal").modal("hide");
         },
     },

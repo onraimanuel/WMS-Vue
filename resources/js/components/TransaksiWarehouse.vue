@@ -144,7 +144,7 @@ export default {
         return {
             dataStok: [],
             filteredData: [],
-            paginatedData: [], // Data transaksi untuk halaman saat ini
+            paginatedData: [],
             searchText: "",
             currentPage: 1,
             perPage: 10,
@@ -199,7 +199,7 @@ export default {
                 .then((response) => {
                     this.dataStok = response.data;
                     this.filteredData = this.dataStok;
-                    this.paginateData(); // Panggil metode untuk membagi data transaksi ke dalam halaman-halaman
+                    this.paginateData();
                 })
                 .catch((error) => {
                     console.error("Error fetching data:", error);

@@ -1,16 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Stock;
 use App\Models\Merchants;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StokController extends Controller
 {
+    private $baseApiUrl;
+
+    public function __construct()
+    {
+        $this->baseApiUrl = 'http://127.0.0.1:8001/api';
+    }
+
     public function index()
     {
         try {
@@ -20,8 +28,8 @@ class StokController extends Controller
 
             $client = new Client();
 
-            $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
-            $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
+            $response_product = $client->get($this->baseApiUrl . '/listdaftarproduk');
+            $response_category = $client->get($this->baseApiUrl . '/pilihkategori');
 
             if ($response_product->getStatusCode() !== 200 || $response_category->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data produk atau kategori dari API');
@@ -75,7 +83,7 @@ class StokController extends Controller
             ]);
 
             $client = new Client();
-            $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
+            $response_product = $client->get($this->baseApiUrl . '/listdaftarproduk');
 
             if ($response_product->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data produk dari API');
@@ -103,7 +111,7 @@ class StokController extends Controller
             $stock->lokasi = $request->lokasi;
             $stock->save();
 
-            $response_marketplace_previous = $client->get('https://kreatif.tobakab.go.id/api/getstock/' . $productId, [
+            $response_marketplace_previous = $client->get($this->baseApiUrl . '/getstock/' . $productId, [
                 'verify' => true,
             ]);
             
@@ -115,7 +123,7 @@ class StokController extends Controller
             
             $new_stock = $stock_previous['stok'] + $request->jumlah;
             
-            $response_marketplace = $client->post('https://kreatif.tobakab.go.id/api/updatestock', [
+            $response_marketplace = $client->post($this->baseApiUrl . '/updatestock', [
                 'form_params' => [
                     'product_id' => $productId,
                     'stok' => $new_stock,
@@ -141,8 +149,8 @@ class StokController extends Controller
             $stock->delete();
 
             $client = new Client();
-            $response_marketplace_previous = $client->get('https://kreatif.tobakab.go.id/api/getstock/' . $stock->product_id, [
-                'verify' => false,
+            $response_marketplace_previous = $client->get($this->baseApiUrl . '/getstock/' . $stock->product_id, [
+                'verify' => true,
             ]);
             
             if ($response_marketplace_previous->getStatusCode() !== 200) {
@@ -153,12 +161,12 @@ class StokController extends Controller
             
             $new_stock = $stock_previous['stok'] - $jumlahStok;
 
-            $response_marketplace = $client->post('https://kreatif.tobakab.go.id/api/updatestock', [
+            $response_marketplace = $client->post($this->baseApiUrl . '/updatestock', [
                 'form_params' => [
                     'product_id' => $stock->product_id,
                     'stok' => $new_stock,
                 ],
-                'verify' => false,
+                'verify' => true,
             ]);
 
             if ($response_marketplace->getStatusCode() !== 200) {
@@ -178,13 +186,13 @@ class StokController extends Controller
         try {
             $client = new Client();
     
-            $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
+            $response_product = $client->get($this->baseApiUrl . '/listdaftarproduk');
             if ($response_product->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data produk dari API');
             }
             $products = json_decode($response_product->getBody()->getContents(), true);
     
-            $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
+            $response_category = $client->get($this->baseApiUrl . '/pilihkategori');
             if ($response_category->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data kategori dari API');
             }
@@ -238,8 +246,8 @@ class StokController extends Controller
 
             $client = new Client();
 
-            $response_product = $client->get('https://kreatif.tobakab.go.id/api/listdaftarproduk');
-            $response_category = $client->get('https://kreatif.tobakab.go.id/api/pilihkategori');
+            $response_product = $client->get($this->baseApiUrl . '/listdaftarproduk');
+            $response_category = $client->get($this->baseApiUrl . '/pilihkategori');
 
             if ($response_product->getStatusCode() !== 200 || $response_category->getStatusCode() !== 200) {
                 throw new \Exception('Gagal mengambil data produk atau kategori dari API');

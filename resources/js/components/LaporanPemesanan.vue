@@ -142,6 +142,7 @@
 import axios from "axios";
 import moment from "moment";
 import flatPickr from "vue-flatpickr-component";
+import { inject } from "vue";
 
 export default {
     components: {
@@ -159,7 +160,10 @@ export default {
             perPage: 10,
         };
     },
-
+    setup() {
+        const apiUrl = inject("apiUrl");
+        return { apiUrl };
+    },
     methods: {
         search() {
             if (!this.datefilter || !this.endDateFilter) {
@@ -186,15 +190,13 @@ export default {
             return moment(date).format("DD-MM-YYYY");
         },
 
-        fetchData() {
-            axios
-                .get("https://kreatif.tobakab.go.id/api/pembelian")
-                .then((response) => {
-                    this.purchases = response.data.purchases;
-                })
-                .catch((error) => {
-                    console.error("Error fetching data:", error);
-                });
+        async fetchData() {
+            try {
+                const response = await axios.get(`${this.apiUrl}/pembelian`);
+                this.purchases = response.data.purchases;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {

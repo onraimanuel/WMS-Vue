@@ -189,7 +189,6 @@ export default {
         },
 
         async editProduk() {
-            // Implement your edit functionality here
             try {
                 const stockId = this.$route.params.id;
                 const response = await axios.put(
@@ -197,10 +196,8 @@ export default {
                     this.editedProduct
                 );
                 console.log("Product updated successfully:", response.data);
-                // Redirect or show success message
             } catch (error) {
                 console.error("Error updating product:", error);
-                // Show error message
             }
         },
     },

@@ -27,9 +27,7 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
-                        <a
-                            href="http://127.0.0.1:8000/PembelianProduk"
-                            class="small-box-footer"
+                        <a href="/PembelianProduk" class="small-box-footer"
                             >Info Lebih lanjut
                             <i class="fas fa-arrow-circle-right"></i
                         ></a>
@@ -257,10 +255,8 @@ export default {
                 console.log(response.data);
                 this.products = response.data;
 
-                // Hitung jumlah total stok yang tersedia
                 this.totalStockAvailable = this.calculateTotalStockAvailable();
 
-                // Ambil data transaksi
                 await this.fetchTransactions();
 
                 this.totalItemsSold = this.calculateTotalItemsSold();
