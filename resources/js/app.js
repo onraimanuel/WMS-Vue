@@ -15,7 +15,7 @@ import EditProduk from "./components/EditProduk.vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
-const API_URL = "https://kreatif.tobakab.go.id/api";
+const API_URL = "http://127.0.0.1:8001/api";
 
 const router = createRouter({
     history: createWebHistory(),

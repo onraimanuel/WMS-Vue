@@ -16,7 +16,7 @@ class StokController extends Controller
 
     public function __construct()
     {
-        $this->baseApiUrl = 'https://kreatif.tobakab.go.id/api';
+        $this->baseApiUrl = 'http://127.0.0.1:8001/api';
     }
 
     public function index()
@@ -282,5 +282,4 @@ class StokController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 }

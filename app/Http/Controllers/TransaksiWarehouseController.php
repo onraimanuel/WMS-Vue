@@ -71,10 +71,4 @@ class TransaksiWarehouseController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
-    
-
-
-    
-
 }
