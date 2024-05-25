@@ -25,7 +25,7 @@
                                         class="form-control"
                                         id="namaProduk"
                                         v-model="editedProduct.product_name"
-                                        required
+                                        readonly
                                     />
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                         type="number"
                                         class="form-control"
                                         id="stok"
-                                        v-model="editedProduct.stok"
+                                        v-model="editedProduct.sisa_stok"
                                         required
                                     />
                                 </div>
@@ -57,7 +57,7 @@
                                         class="form-control"
                                         id="kategoriProduk"
                                         v-model="editedProduct.kategori"
-                                        required
+                                        readonly
                                     />
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
                                         class="form-control"
                                         id="spesifikasiProduk"
                                         v-model="editedProduct.spesifikasi"
-                                        required
+                                        readonly
                                     />
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                                         class="form-control"
                                         id="hargaModal"
                                         v-model="editedProduct.hargamodal"
-                                        required
+                                        readonly
                                     />
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                                         class="form-control"
                                         id="hargaJual"
                                         v-model="editedProduct.hargajual"
-                                        required
+                                        readonly
                                     />
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
                                         class="form-control"
                                         id="tanggalMasuk"
                                         v-model="editedProduct.tanggal_masuk"
-                                        required
+                                        readonly
                                     />
                                 </div>
                             </div>
@@ -161,19 +161,20 @@
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
     data() {
         return {
             editedProduct: {
-                namaProduk: "",
-                stok: 0,
-                kategoriProduk: "",
-                spesifikasiProduk: "",
-                hargaModal: 0,
-                hargaJual: 0,
-                tanggalMasuk: "",
-                tanggalExpired: "",
+                product_name: "",
+                sisa_stok: 0,
+                kategori: "",
+                spesifikasi: "",
+                hargamodal: 0,
+                hargajual: 0,
+                tanggal_masuk: "",
+                tanggal_expired: "",
             },
         };
     },
@@ -183,25 +184,41 @@ export default {
             try {
                 const response = await axios.get(`/stok/${stockId}`);
                 this.editedProduct = response.data;
+                this.editedProduct.sisa_stok = response.data.sisa_stok;
             } catch (error) {
                 console.error("Error fetching product details:", error);
             }
         },
 
         async editProduk() {
+            const stockId = this.$route.params.id;
             try {
-                const stockId = this.$route.params.id;
-                const response = await axios.put(
-                    `/stok/${stockId}`,
-                    this.editedProduct
-                );
-                console.log("Product updated successfully:", response.data);
+                await axios.put(`/stok/${stockId}`, {
+                    sisa_stok: this.editedProduct.sisa_stok,
+                    tanggal_expired: this.editedProduct.tanggal_expired,
+                });
+
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Produk berhasil diupdate",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                this.$router.push("/ProdukToko"); 
+                });
             } catch (error) {
                 console.error("Error updating product:", error);
+                
+                Swal.fire({
+                    title: "Gagal",
+                    text: "Gagal mengupdate produk",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
             }
-        },
+        }
     },
-    mounted() {
+    created() {
         this.fetchProductDetails();
     },
 };

@@ -282,4 +282,27 @@ class StokController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'sisa_stok' => 'required|numeric|min:1',
+            'tanggal_expired' => 'required|date',
+        ]);
+        $stock = Stock::findOrFail($id);
+
+        if ($stock) {
+            $stock->sisa_stok = $request->sisa_stok;
+            $stock->tanggal_expired = $request->tanggal_expired;
+            $stock->save();
+
+            return response()->json(['message' => 'Stok berhasil diupdate']);
+        } else {
+            return response()->json(['message' => 'Stok tidak ditemukan'], 404);
+        }
 }
+
+}
+
+
+

@@ -33,6 +33,7 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/stok/{id}', [StokController::class, 'show']);
     Route::delete('/stok/{id}', [StokController::class, 'destroy']);
+    Route::put('/stok/{id}', [StokController::class, 'update']);
 
  
     Route::get('/TransaksiWarehouse', [TransaksiWarehouseController::class, 'index'])->name("TransaksiWarehouse");

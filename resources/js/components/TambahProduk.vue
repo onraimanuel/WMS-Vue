@@ -209,6 +209,7 @@
 <script>
 import axios from "axios";
 import { inject } from "vue";
+import Swal from "sweetalert2";
 
 export default {
     data() {
@@ -285,12 +286,20 @@ export default {
                 });
 
                 if (response.status === 200) {
-                    alert("Produk berhasil ditambahkan");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Produk berhasil ditambahkan',
+                    });
                     this.$router.push("/ProdukToko");
                 }
             } catch (error) {
                 console.error("Error adding product:", error);
-                alert("Gagal menambahkan produk");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal menambahkan produk',
+                });
             }
         },
     },
