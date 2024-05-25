@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 
 class ProdukController extends Controller
 {
@@ -17,5 +20,32 @@ class ProdukController extends Controller
         return view('TambahProduk');
     }
 
+    public function notifikasi(){
+        return view('Notifikasi');
+    }
+
+    public function getNotifications()
+    {
+        $today = Carbon::today();
+        $barangMasuk = Carbon::today()->subDays(1)->toDateString();
+        $barangExp = Carbon::today()->addDays(30)->toDateString();
+    
+        // Mengambil data produk yang baru masuk
+        $newProducts = DB::table('stocks')
+                        ->where('tanggal_masuk', '>=', $barangMasuk)
+                        ->get();
+    
+        // Mengambil data produk yang akan expired
+        $expiringProducts = DB::table('stocks')
+                              ->where('tanggal_expired', '<=', $barangExp)
+                              ->get();
+    
+        $notifications = [
+            'new_products' => $newProducts,
+            'expiring_products' => $expiringProducts,
+        ];
+    
+        return response()->json($notifications);
+    }
 
 }

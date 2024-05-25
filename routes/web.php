@@ -33,17 +33,15 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/stok/{id}', [StokController::class, 'show']);
     Route::delete('/stok/{id}', [StokController::class, 'destroy']);
+    Route::put('/stok/{id}', [StokController::class, 'update']);
 
  
     Route::get('/TransaksiWarehouse', [TransaksiWarehouseController::class, 'index'])->name("TransaksiWarehouse");
     Route::get('/dataTransaksi', [TransaksiWarehouseController::class, 'dataTransaksi'])->name("dataTransaksi");
     Route::get('/TambahTransaksi', [TransaksiWarehouseController::class, 'TambahTransaksi'])->name("TambahTransaksi");
     Route::post('/AddTransaksi', [TransaksiWarehouseController::class, 'AddTransaksi'])->name("AddTransaksi");
-
-
-    
-    
-    
+    Route::get('/Notifikasi', [ProdukController::class, 'notifikasi'])->name("notifikasi.produk");
+    Route::get('/notifications', [ProdukController::class, 'getNotifications'])->name("getNotifications.produk");
 });
 
 Route::get('/login', [LoginController::class, 'login'])->name("login");
