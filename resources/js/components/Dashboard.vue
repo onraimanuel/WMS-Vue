@@ -294,7 +294,7 @@ export default {
         },
         async fetchTransactions() {
             try {
-                const response = await axios.get("/LaporandataStok");
+                const response = await axios.get("/dataTransaksi");
                 console.log(response.data);
                 this.transaksi = response.data;
             } catch (error) {
@@ -308,7 +308,7 @@ export default {
         },
         calculateTotalItemsSold() {
             return this.transaksi.reduce((total, transaksi) => {
-                return total + transaksi.total_barang_keluar;
+                return total + transaksi.jumlah_barang_keluar;
             }, 0);
         },
         prevPage() {
