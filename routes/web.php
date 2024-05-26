@@ -31,6 +31,7 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/LaporanPemesanan', [LaporanController::class, 'laporanPemesanan'])->name("laporan.pemesanan");
     Route::get('/LaporanStok', [LaporanController::class, 'laporanStok'])->name("laporan.stok");
+    Route::get('/LaporandataStok', [StokController::class, 'LaporanStok']);
 
     Route::get('/stok', [StokController::class, 'index']);
     Route::get('/searchByDate', [StokController::class, 'searchByDate']);
