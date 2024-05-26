@@ -50,6 +50,7 @@
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 title="Edit"
+                                                @click="redirectToEditTransaksi(transaction.transaksi_id)"
                                             >
                                                 <i class="fa fa-edit"></i>
                                             </button>
@@ -61,6 +62,7 @@
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 title="Delete"
+                                                @click="deleteTransaction(transaction.transaksi_id)"
                                             >
                                                 <i class="fa fa-trash"></i>
                                             </button>
@@ -138,6 +140,7 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import Swal from "sweetalert2";
 
 export default {
     data() {
@@ -206,8 +209,44 @@ export default {
                 });
         },
 
+        deleteTransaction(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Transaksi ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                        .delete(`/deleteTransaksi/${id}`)
+                        .then((response) => {
+                            Swal.fire(
+                                'Deleted!',
+                                response.data.message,
+                                'success'
+                            );
+                            this.fetchData();
+                        })
+                        .catch((error) => {
+                            console.error("Error deleting data:", error);
+                            Swal.fire(
+                                'Error!',
+                                'Gagal menghapus transaksi.',
+                                'error'
+                            );
+                        });
+                }
+            });
+        },
+
         redirectToTambahTransaksi() {
             window.location.href = "/TambahTransaksi";
+        },
+        redirectToEditTransaksi(id) {
+            this.$router.push({ name: "EditTransaksi", params: { id } });
         },
         prevPage() {
             if (this.currentPage > 1) {

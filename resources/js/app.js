@@ -12,6 +12,7 @@ import TambahProduk from "./components/TambahProduk.vue";
 import TransaksiWarehouse from "./components/TransaksiWarehouse.vue";
 import TambahTransaksi from "./components/TambahTransaksi.vue";
 import EditProduk from "./components/EditProduk.vue";
+import EditTransaksi from "./components/EditTransaksi.vue";
 import Notifikasi from "./components/Notifikasi.vue";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
@@ -29,9 +30,11 @@ const router = createRouter({
         { path: "/LaporanStok", component: LaporanStok },
         { path: "/TambahProduk", component: TambahProduk },
         { path: "/EditProduk/:id", name: "EditProduk", component: EditProduk },
+        { path: "/EditTransaksi/:id", name: "EditTransaksi", component: EditTransaksi },
         { path: "/TransaksiWarehouse", component: TransaksiWarehouse },
         { path: "/TambahTransaksi", component: TambahTransaksi },
         { path: "/Notifikasi", component: Notifikasi },
+       
     ],
 });
 
