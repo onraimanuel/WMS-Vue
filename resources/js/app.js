@@ -30,11 +30,14 @@ const router = createRouter({
         { path: "/LaporanStok", component: LaporanStok },
         { path: "/TambahProduk", component: TambahProduk },
         { path: "/EditProduk/:id", name: "EditProduk", component: EditProduk },
-        { path: "/EditTransaksi/:id", name: "EditTransaksi", component: EditTransaksi },
+        {
+            path: "/EditTransaksi/:id",
+            name: "EditTransaksi",
+            component: EditTransaksi,
+        },
         { path: "/TransaksiWarehouse", component: TransaksiWarehouse },
         { path: "/TambahTransaksi", component: TambahTransaksi },
         { path: "/Notifikasi", component: Notifikasi },
-       
     ],
 });
 

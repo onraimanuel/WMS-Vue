@@ -6,7 +6,9 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Stock;
 use App\Models\Merchants;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -301,7 +303,6 @@ class StokController extends Controller
             return response()->json(['message' => 'Stok tidak ditemukan'], 404);
         }
     }
-
 }
 
 

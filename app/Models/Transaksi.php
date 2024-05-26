@@ -17,6 +17,7 @@ class Transaksi extends Model
         'stocks_id',
         'jumlah_barang_keluar',
         'tanggal_keluar',
+        'created_at'
     ];
 
     public function stocks()

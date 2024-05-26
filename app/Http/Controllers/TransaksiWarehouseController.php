@@ -7,33 +7,59 @@ use App\Models\Stock;
 use App\Models\Merchants;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+
 
 use Illuminate\Http\Request;
 
 class TransaksiWarehouseController extends Controller
 {
+    private $baseApiUrl;
+
+    public function __construct()
+    {
+        $this->baseApiUrl = 'https://kreatif.tobakab.go.id/api';
+    }
+
+
     public function index(){
         return view('TransaksiWarehouse');
     }
 
     public function dataTransaksi()
     {
-        $transaksis = Transaksi::select(
-            'transaksi.transaksi_id',
-            'products.product_name',
-            'merchants.nama_merchant',
-            'transaksi.jumlah_barang_keluar',
-            'transaksi.tanggal_keluar'
-        )
-        ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
-        ->join('products', 'stocks.product_id', '=', 'products.product_id')
-        ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
-        ->orderBy('transaksi.tanggal_keluar', 'desc') 
-        ->get();
-    
-        return response()->json($transaksis);
+        $response = Http::get($this->baseApiUrl . '/listdaftarproduk');
+        
+        if ($response->successful()) {
+            $products = $response->json(); 
+            $productMap = [];
+            
+            foreach ($products as $product) {
+                $productMap[$product['product_id']] = $product['product_name'];
+            }
+            
+            $transaksis = Transaksi::select(
+                'transaksi.transaksi_id',
+                'stocks.product_id',
+                'merchants.nama_merchant',
+                'transaksi.jumlah_barang_keluar',
+                'transaksi.tanggal_keluar'
+            )
+            ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
+            ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
+            ->orderBy('transaksi.tanggal_keluar', 'desc') 
+            ->get();
+
+            foreach ($transaksis as $transaksi) {
+                $transaksi->product_name = $productMap[$transaksi->product_id] ?? 'Unknown Product';
+            }
+            
+            return response()->json($transaksis);
+        } else {
+            return response()->json(['error' => 'Failed to fetch products from external API'], 500);
+        }
     }
-    
+
 
     public function TambahTransaksi(){
         return view('/TambahTransaksi');
@@ -73,87 +99,72 @@ class TransaksiWarehouseController extends Controller
     }
 
     public function deleteTransaksi($id)
-{
-    try {
-        $transaksi = Transaksi::findOrFail($id);
-        $transaksi->delete();
-        return response()->json(['message' => 'Transaksi berhasil dihapus'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+    {
+        try {
+            $transaksi = Transaksi::findOrFail($id);
+            $transaksi->delete();
+            return response()->json(['message' => 'Transaksi berhasil dihapus'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
 
-public function getTransaksiById($id)
-{
-    try {
-        $transaksi = Transaksi::select(
-            'transaksi.transaksi_id',
-            'products.product_name',
-            'merchants.nama_merchant',
-            'transaksi.jumlah_barang_keluar',
-            DB::raw("DATE_FORMAT(transaksi.tanggal_keluar, '%Y-%m-%d') as tanggal_keluar")
-        )
-        ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
-        ->join('products', 'stocks.product_id', '=', 'products.product_id')
-        ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
-        ->where('transaksi.transaksi_id', $id)
-        ->first();
+    public function getTransaksiById($id)
+    {
+        try {
+            $transaksi = Transaksi::select(
+                'transaksi.transaksi_id',
+                'products.product_name',
+                'merchants.nama_merchant',
+                'transaksi.jumlah_barang_keluar',
+                DB::raw("DATE_FORMAT(transaksi.tanggal_keluar, '%Y-%m-%d') as tanggal_keluar")
+            )
+            ->join('stocks', 'transaksi.stock_id', '=', 'stocks.stock_id')
+            ->join('products', 'stocks.product_id', '=', 'products.product_id')
+            ->join('merchants', 'stocks.merchant_id', '=', 'merchants.merchant_id')
+            ->where('transaksi.transaksi_id', $id)
+            ->first();
 
-        if (!$transaksi) {
-            return response()->json(['error' => 'Transaksi tidak ditemukan'], 404);
+            if (!$transaksi) {
+                return response()->json(['error' => 'Transaksi tidak ditemukan'], 404);
+            }
+
+            return response()->json($transaksi);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        return response()->json($transaksi);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
 
-public function updateTransaksi(Request $request, $id)
-{
-    try {
-        DB::beginTransaction();
+    public function updateTransaksi(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $transaksi = Transaksi::findOrFail($id);
+            $stock = Stock::where('stock_id', $transaksi->stock_id)->first();
+            if (!$stock) {
+                return response()->json(['error' => 'Stok tidak ditemukan'], 404);
+            }
+            $stock->sisa_stok += $transaksi->jumlah_barang_keluar;
+            if (!$request->filled(['jumlah_barang_keluar', 'tanggal_keluar'])) {
+                return response()->json(['error' => 'Lengkapi data jumlah barang keluar dan tanggal transaksi'], 400);
+            }
+            if ($stock->sisa_stok < $request->jumlah_barang_keluar) {
+                return response()->json(['error' => 'Jumlah stok tidak mencukupi'], 400);
+            }
+            $stock->sisa_stok -= $request->jumlah_barang_keluar;
+            $stock->save();
+            $transaksi->jumlah_barang_keluar = $request->jumlah_barang_keluar;
+            $transaksi->tanggal_keluar = $request->tanggal_keluar;
+            $transaksi->save();
 
-        // Temukan transaksi berdasarkan ID
-        $transaksi = Transaksi::findOrFail($id);
+            DB::commit();
 
-        // Temukan stok berdasarkan stock_id dari transaksi
-        $stock = Stock::where('stock_id', $transaksi->stock_id)->first();
-
-        if (!$stock) {
-            return response()->json(['error' => 'Stok tidak ditemukan'], 404);
+            return response()->json(['message' => 'Transaksi berhasil diperbarui'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        // Kembalikan stok lama sebelum mengupdate jumlah barang keluar
-        $stock->sisa_stok += $transaksi->jumlah_barang_keluar;
-
-        // Pastikan jumlah_barang_keluar dan tanggal_keluar tidak kosong
-        if (!$request->filled(['jumlah_barang_keluar', 'tanggal_keluar'])) {
-            return response()->json(['error' => 'Lengkapi data jumlah barang keluar dan tanggal transaksi'], 400);
-        }
-
-        // Periksa apakah stok mencukupi untuk jumlah barang keluar baru
-        if ($stock->sisa_stok < $request->jumlah_barang_keluar) {
-            return response()->json(['error' => 'Jumlah stok tidak mencukupi'], 400);
-        }
-
-        // Update sisa stok
-        $stock->sisa_stok -= $request->jumlah_barang_keluar;
-        $stock->save();
-
-        // Update transaksi
-        $transaksi->jumlah_barang_keluar = $request->jumlah_barang_keluar;
-        $transaksi->tanggal_keluar = $request->tanggal_keluar;
-        $transaksi->save();
-
-        DB::commit();
-
-        return response()->json(['message' => 'Transaksi berhasil diperbarui'], 200);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
 
     
     

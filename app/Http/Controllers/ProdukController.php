@@ -30,12 +30,10 @@ class ProdukController extends Controller
         $barangMasuk = Carbon::today()->subDays(1)->toDateString();
         $barangExp = Carbon::today()->addDays(30)->toDateString();
     
-        // Mengambil data produk yang baru masuk
         $newProducts = DB::table('stocks')
                         ->where('tanggal_masuk', '>=', $barangMasuk)
                         ->get();
     
-        // Mengambil data produk yang akan expired
         $expiringProducts = DB::table('stocks')
                               ->where('tanggal_expired', '<=', $barangExp)
                               ->get();
