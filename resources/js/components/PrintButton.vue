@@ -8,12 +8,18 @@
 export default {
     methods: {
         printTable() {
-            const table = document.getElementById("example1");
-            const tableClone = table.cloneNode(true);
-            const printButtons = tableClone.querySelectorAll(".buttons-print");
-            printButtons.forEach((button) => {
-                button.style.display = "none";
+            const tables = document.querySelectorAll("#example1, #example2");
+            const tableClone = document.createElement('div');
+            
+            tables.forEach(table => {
+                const clonedTable = table.cloneNode(true);
+                const printButtons = clonedTable.querySelectorAll(".buttons-print");
+                printButtons.forEach(button => {
+                    button.style.display = "none";
+                });
+                tableClone.appendChild(clonedTable);
             });
+
             const win = window.open("", "_blank");
             win.document.body.appendChild(tableClone);
             win.print();

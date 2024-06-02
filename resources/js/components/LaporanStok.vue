@@ -31,7 +31,7 @@
                             <PrintButton class="btn btn-primary btn-block" />
                             <SearchInput
                                 v-model="searchText"
-                                @search-input="handleSearchInput"
+                                @input="handleSearchInput"
                                 placeholder="Search"
                                 class="form-control"
                             />
@@ -240,27 +240,32 @@ export default {
                     console.error("Error fetching data:", error);
                 });
         },
-        handleSearchInput(searchValue) {
-            this.filteredData = this.dataStok.filter(
-                (item) =>
-                    item.namaToko
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.category
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.namaProduk
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.stokMasuk
+        handleSearchInput() {
+            const searchTerm = this.searchText.toLowerCase();
+            this.filteredData = this.dataStok.filter((item) => {
+                return (
+                    item.merchant_name.toLowerCase().includes(searchTerm) ||
+                    item.kategori.toLowerCase().includes(searchTerm) ||
+                    item.product_name.toLowerCase().includes(searchTerm) ||
+                    item.stok.toString().toLowerCase().includes(searchTerm) ||
+                    item.total_barang_keluar
                         .toString()
                         .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                    item.stokKeluar
+                        .includes(searchTerm) ||
+                    item.stok_tersisa
                         .toString()
                         .toLowerCase()
-                        .includes(searchValue.toLowerCase())
-            );
+                        .includes(searchTerm) ||
+                    item.hargamodal.toString().includes(searchTerm) ||
+                    item.hargajual.toString().includes(searchTerm) ||
+                    moment(item.tanggal_masuk)
+                        .format("DD-MM-YYYY")
+                        .includes(searchTerm) ||
+                    moment(item.transaksi_terakhir)
+                        .format("DD-MM-YYYY")
+                        .includes(searchTerm)
+                );
+            });
             this.hitungTotalKeuntunganKeseluruhan();
         },
         prevPage() {

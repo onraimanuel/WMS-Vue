@@ -28,14 +28,15 @@
                                     :config="datePickerConfig"
                                 ></flat-pickr>
                             </div>
-                            <div class="col-md-2 align-self-end">
+                            <div class="col-md-3 align-self-end d-flex">
                                 <button
                                     type="button"
-                                    class="btn btn-info btn-sm btn-block"
+                                    class="btn btn-info btn-sm btn-block mr-2"
                                     @click="search"
                                 >
                                     Cari
                                 </button>
+                                <PrintButton class="btn btn-primary btn-sm custom-print-button" />
                             </div>
                         </div>
                     </div>
@@ -168,10 +169,12 @@ import axios from "axios";
 import moment from "moment";
 import flatPickr from "vue-flatpickr-component";
 import { inject } from "vue";
+import PrintButton from "./PrintButton.vue";  // Import PrintButton
 
 export default {
     components: {
         flatPickr,
+        PrintButton,  // Declare PrintButton component
     },
     data() {
         return {
@@ -293,23 +296,36 @@ export default {
         pagesToShow() {
             const maxVisiblePages = 5;
             const pages = [];
-            let startPage = 1;
-            let endPage = Math.min(maxVisiblePages, this.totalPages);
 
-            if (this.currentPage > Math.floor(maxVisiblePages / 2)) {
-                startPage = this.currentPage - Math.floor(maxVisiblePages / 2);
-                endPage = this.currentPage + Math.floor(maxVisiblePages / 2);
-                if (endPage > this.totalPages) {
-                    endPage = this.totalPages;
-                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            if (this.totalPages <= maxVisiblePages) {
+                for (let i = 1; i <= this.totalPages; i++) {
+                    pages.push(i);
                 }
-            }
-
-            for (let i = startPage; i <= endPage; i++) {
-                pages.push(i);
+            } else {
+                let startPage, endPage;
+                if (this.currentPage <= 3) {
+                    startPage = 1;
+                    endPage = maxVisiblePages;
+                } else if (this.currentPage + 2 >= this.totalPages) {
+                    startPage = this.totalPages - (maxVisiblePages - 1);
+                    endPage = this.totalPages;
+                } else {
+                    startPage = this.currentPage - 2;
+                    endPage = this.currentPage + 2;
+                }
+                for (let i = startPage; i <= endPage; i++) {
+                    pages.push(i);
+                }
             }
             return pages;
         },
     },
 };
 </script>
+
+<style scoped>
+.custom-print-button {
+    width: auto; /* or a specific width */
+    white-space: nowrap; /* Prevents text wrapping */
+}
+</style>
