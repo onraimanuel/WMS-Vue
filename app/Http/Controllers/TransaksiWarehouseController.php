@@ -166,6 +166,49 @@ class TransaksiWarehouseController extends Controller
         }
     }
 
+    public function reportBarang(Request $request)
+    {
+        $request->validate([
+            'stock_id' => 'required|exists:stocks,stock_id',
+            'nama_penanggung_jawab' => 'required|string|max:255',
+            'kondisi_barang' => 'required|in:rusak,hilang',
+            'jumlah_barang_keluar' => 'required|integer|min:1',
+            'tanggal_keluar' => 'required|date',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $stock = Stock::where('stock_id', $request->stock_id)->first();
+
+            if (!$stock) {
+                return response()->json(['error' => 'Stok tidak ditemukan'], 404);
+            }
+
+            if ($stock->sisa_stok < $request->jumlah_barang_keluar) {
+                return response()->json(['error' => 'Jumlah stok tidak mencukupi'], 400);
+            }
+
+            $stock->sisa_stok -= $request->jumlah_barang_keluar;
+            $stock->save();
+
+            $transaksi = new Transaksi();
+            $transaksi->stock_id = $request->stock_id;
+            $transaksi->nama_penanggung_jawab = $request->nama_penanggung_jawab;
+            $transaksi->kondisi_barang = $request->kondisi_barang;
+            $transaksi->jumlah_barang_keluar = $request->jumlah_barang_keluar;
+            $transaksi->tanggal_keluar = $request->tanggal_keluar;
+            $transaksi->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Report berhasil ditambahkan'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     
     
 }

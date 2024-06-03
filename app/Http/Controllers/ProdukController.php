@@ -37,10 +37,17 @@ class ProdukController extends Controller
         $expiringProducts = DB::table('stocks')
                               ->where('tanggal_expired', '<=', $barangExp)
                               ->get();
+        $damagedProducts = DB::table('transaksis')
+                            ->select('stocks.*', 'transaksis.kondisi_barang')
+                            ->join('stocks', 'transaksis.stock_id', '=', 'stocks.stock_id')
+                            ->where('transaksis.kondisi_barang', 'rusak') // or 'hilang'
+                            ->whereDate('transaksis.tanggal_keluar', $today)
+                            ->get();
     
         $notifications = [
             'new_products' => $newProducts,
             'expiring_products' => $expiringProducts,
+            'damaged_products' => $damagedProducts,
         ];
     
         return response()->json($notifications);

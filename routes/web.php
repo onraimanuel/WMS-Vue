@@ -49,6 +49,8 @@ Route::middleware(['web'])->group(function () {
     Route::get('/TambahTransaksi', [TransaksiWarehouseController::class, 'TambahTransaksi'])->name("TambahTransaksi");
     Route::post('/AddTransaksi', [TransaksiWarehouseController::class, 'AddTransaksi'])->name("AddTransaksi");
 
+    Route::post('/ReportBarang', [TransaksiWarehouseController::class, 'reportBarang'])->name("reportBarang");
+
 });
 
 Route::get('/login', [LoginController::class, 'login'])->name("login");

@@ -1,6 +1,7 @@
 <template>
     <section class="content">
         <div class="container-fluid">
+            <!-- Produk Baru Card -->
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Produk Baru</h3>
@@ -47,6 +48,7 @@
                 </div>
             </div>
 
+            <!-- Produk Akan Kedaluwarsa Card -->
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Produk Akan Kedaluwarsa</h3>
@@ -92,6 +94,47 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Produk Rusak/Hilang Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Produk Rusak/Hilang</h3>
+                </div>
+                <div class="card-body table-responsive">
+                    <table
+                        v-if="damagedMissingProducts.length > 0"
+                        id="damaged-missing-products-table"
+                        class="table table-bordered table-striped"
+                    >
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Produk</th>
+                                <th>Nama Penanggung Jawab</th>
+                                <th>Kondisi Barang</th>
+                                <th>Jumlah Barang Keluar</th>
+                                <th>Tanggal Keluar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(product, index) in damagedMissingProducts"
+                                :key="index"
+                            >
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ product.product_name }}</td>
+                                <td>{{ product.nama_penanggung_jawab }}</td>
+                                <td>{{ product.kondisi_barang }}</td>
+                                <td>{{ product.jumlah_barang_keluar }}</td>
+                                <td>{{ formatDate(product.tanggal_keluar) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div v-else class="card-body table-responsive">
+                        <p>Produk Rusak/Hilang Kosong</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </template>
@@ -106,6 +149,7 @@ export default {
             products: [],
             newProducts: [],
             expiringProducts: [],
+            damagedMissingProducts: [],
             transaksi: [],
             currentPage: 1,
             perPage: 10,
@@ -166,6 +210,7 @@ export default {
 
                 this.fetchNewProducts();
                 this.fetchExpiringProducts();
+                this.fetchDamagedMissingProducts();
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -183,14 +228,19 @@ export default {
             this.newProducts = this.products.filter((product) => {
                 const today = moment();
                 const productDate = moment(product.tanggal_masuk);
-                return today.diff(productDate, "days") <= 1; //Data untuk barang yang baru masuk
+                return today.diff(productDate, "days") <= 1; // Data untuk barang yang baru masuk
             });
         },
         fetchExpiringProducts() {
             this.expiringProducts = this.products.filter((product) => {
                 const today = moment();
                 const expirationDate = moment(product.tanggal_expired);
-                return expirationDate.diff(today, "days") <= 30; //Data untuk Barang yang ingin Exp
+                return expirationDate.diff(today, "days") <= 30; // Data untuk barang yang ingin expired
+            });
+        },
+        fetchDamagedMissingProducts() {
+            this.damagedMissingProducts = this.transaksi.filter((transaksi) => {
+                return transaksi.kondisi_barang === "rusak" || transaksi.kondisi_barang === "hilang";
             });
         },
         calculateTotalStockAvailable() {

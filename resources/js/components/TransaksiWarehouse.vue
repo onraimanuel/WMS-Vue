@@ -16,9 +16,7 @@
                                 <th>No</th>
                                 <th class="text-center">Nama Produk</th>
                                 <th class="text-center">Nama Toko</th>
-                                <th class="text-center">
-                                    Jumlah Barang Keluar
-                                </th>
+                                <th class="text-center">Jumlah Barang Keluar</th>
                                 <th class="text-center">Tanggal Transaksi</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -129,6 +127,14 @@
                                 >
                                     Tambah Transaksi
                                 </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-block bg-gradient-danger btn-sm mt-2"
+                                    @click="redirectToReportBarang"
+                                >
+                                    Report Barang Rusak/Hilang
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -244,6 +250,9 @@ export default {
 
         redirectToTambahTransaksi() {
             window.location.href = "/TambahTransaksi";
+        },
+        redirectToReportBarang() {
+            this.$router.push({ path: '/ReportBarang' });
         },
         redirectToEditTransaksi(id) {
             this.$router.push({ name: "EditTransaksi", params: { id } });
